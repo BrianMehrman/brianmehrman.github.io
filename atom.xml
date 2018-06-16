@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[My Octopress Blog]]></title>
+  <link href="http://brianmehrman.github.io/brianmehrman/atom.xml" rel="self"/>
+  <link href="http://brianmehrman.github.io/brianmehrman/"/>
+  <updated>2018-06-16T08:58:27-05:00</updated>
+  <id>http://brianmehrman.github.io/brianmehrman/</id>
+  <author>
+    <name><![CDATA[Your Name]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Rails Docker App]]></title>
+    <link href="http://brianmehrman.github.io/brianmehrman/blog/2018/03/25/rails-docker-app/"/>
+    <updated>2018-03-25T18:16:56-05:00</updated>
+    <id>http://brianmehrman.github.io/brianmehrman/blog/2018/03/25/rails-docker-app</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+</feed>

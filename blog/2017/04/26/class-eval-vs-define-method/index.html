@@ -1,23 +1,86 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <title><![CDATA[Brian Mehrman]]></title>
-  <link href="http://brianmehrman.github.io/atom.xml" rel="self"/>
-  <link href="http://brianmehrman.github.io/"/>
-  <updated>2018-06-17T15:40:16-05:00</updated>
-  <id>http://brianmehrman.github.io/</id>
-  <author>
-    <name><![CDATA[Brian Mehrman]]></name>
-    
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>class_eval vs define_method - Brian Mehrman</title>
+  <meta name="author" content="Brian Mehrman">
 
   
-  <entry>
-    <title type="html"><![CDATA[class_eval vs define_method]]></title>
-    <link href="http://brianmehrman.github.io/blog/2017/04/26/class-eval-vs-define-method/"/>
-    <updated>2017-04-26T17:10:42-05:00</updated>
-    <id>http://brianmehrman.github.io/blog/2017/04/26/class-eval-vs-define-method</id>
-    <content type="html"><![CDATA[<h1>Meta Programming</h1>
+  <meta name="description" content="Meta Programming Having to write redundant methods can lead to hundreds of lines of code that can
+be hard to maintain. Meta programming provides us &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://brianmehrman.github.io/blog/2017/04/26/class-eval-vs-define-method/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="atom.xml" rel="alternate" title="Brian Mehrman" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Brian Mehrman</a></h1>
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Class_eval vs Define_method</h1>
+    
+  </header>
+
+
+
+
+<span class="categories">
+  
+    
+    <span class="category">
+        ruby
+    </span>
+    
+    <span class="category">
+        meta programming
+    </span>
+    
+  
+</span>
+
+
+<div class="entry-content"><h1>Meta Programming</h1>
 
 <p>Having to write redundant methods can lead to hundreds of lines of code that can
 be hard to maintain. Meta programming provides us with tools that allow us to write
@@ -193,7 +256,109 @@ log.call(arr.first)
 <p>While define_method is quick to create your method it is slower to execute. It also is placed higher up the ancestor chain, slowing the method lookup as well. Define method is great when you need to create a method that will be used in low volume. Using class_eval is slower to define the method, yet it provides the benefit of executing faster than if it were defined using define_method. The methods defined using class_eval also are placed lower in the ancestor chain.</p>
 
 <p>Meta-programming is a great way to dry up your code and create code that can essentially write itself. This benefit comes at a cost, either at compile time or at run time. Knowing what that cost is can help in deciding what approach you show take.</p>
-]]></content>
-  </entry>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+<span class="byline author vcard">Posted by <span class="fn">Brian Mehrman</span></span>
+
+      
+
+
+
+
+
+
+
+
+
+<time datetime="2017-04-26T17:10:42-05:00" pubdate data-updated="true"></time>
+    </p>
+    
+      <div class="sharing">
   
-</feed>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://brianmehrman.github.io/blog/2017/04/26/class-eval-vs-define-method/" data-via="brianmehrman" data-counturl="http://brianmehrman.github.io/blog/2017/04/26/class-eval-vs-define-method/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <form action="https://www.google.com/search" method="get">
+      <fieldset role="search">
+        <input type="hidden" name="q" value="site:brianmehrman.github.io" />
+        <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+      </fieldset>
+    </form>
+  
+  <a href="/blog/archives">Blog Archives</a>
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/04/26/class-eval-vs-define-method/">class_eval vs define_method</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2018 - Brian Mehrman -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="/javascripts/main.js"></script>
+
+
+</body>
+</html>

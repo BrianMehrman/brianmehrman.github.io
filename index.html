@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>My Octopress Blog</title>
-  <meta name="author" content="Your Name">
+  <title>Brian Mehrman</title>
+  <meta name="author" content="Brian Mehrman">
 
   
-  <meta name="description" content=" Blog Archives Recent Posts Rails Docker App ">
+  <meta name="description" content="Meta Programming Having to write redundant methods can lead to hundreds of lines of code that can
+be hard to maintain. Meta programming provides us &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -24,7 +25,7 @@
   <script src="/javascripts/modernizr-2.0.js"></script>
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <link href="atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <link href="atom.xml" rel="alternate" title="Brian Mehrman" type="application/atom+xml">
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic' rel='stylesheet' type='text/css'>
@@ -35,19 +36,254 @@
 
 <body   >
   <header role="banner"><hgroup>
-  <img src="/images/ah_frame_transparent.svg" />
-  <h1><a href="/">My Octopress Blog</a></h1>
+  <h1><a href="/">Brian Mehrman</a></h1>
 </hgroup>
 
 </header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
   <div id="main">
     <div id="content">
       <div class="blog-index">
   
   
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2017/04/26/class-eval-vs-define-method/">Class_eval vs Define_method</a></h1>
+    
+  </header>
+
+
+  
+    <p class="meta">
+      
+
+
+
+
+
+
+
+
+
+<time datetime="2017-04-26T17:10:42-05:00" pubdate data-updated="true"></time>
+      
+    </p>
+  
+  
+
+<span class="categories">
+  
+    
+    <span class="category">
+        ruby
+    </span>
+    
+    <span class="category">
+        meta programming
+    </span>
+    
+  
+</span>
+
+
+  <div class="entry-content"><h1>Meta Programming</h1>
+
+<p>Having to write redundant methods can lead to hundreds of lines of code that can
+be hard to maintain. Meta programming provides us with tools that allow us to write
+code that writes its self.</p>
+
+<h1>Class Eval</h1>
+
+<p>class_eval opens the class and adds the method to the class itself. While this takes
+longer to define a method it puts the new method in the ancestor chain where it can
+be accessed quicker than if you used define_method.</p>
+
+<pre><code>class Test; end
+
+Test.class_eval("def new_method() 1+1 end")
+
+t = Test.new
+t.new_method # =&gt; 2
+</code></pre>
+
+<h1>Define Method</h1>
+
+<p>define_method will define an instance method on the receiver using the block or
+Proc provided. While faster to create the method it has a little overhead that will
+slow the methods execution down. While this performance hit is relatively small it
+has an accumulative effect that can slow down code if the method is called
+multiple times in a row.</p>
+
+<pre><code>class Test; end
+
+Test.define_method(:new_method) do
+  1 + 1
+end
+
+# or using a proc
+
+a_proc = Proc.new { 1 + 1 }
+Test.define_method(:another_method, a_proc)
+
+t = Test.new
+t.new_method # =&gt; 2
+t.another_method # =&gt; 2
+</code></pre>
+
+<h1>Instruction Sequence</h1>
+
+<p>When Ruby compiles the code it will create instructions that YARV. These instructions
+will differ between different that different ways you can define a method even if
+the code in that method are basically the same.</p>
+
+<pre><code># Defines the methods normally
+module Foo
+  def my_method
+    'module method'
+  end
+end
+
+# Defines the method using class eval
+module ClassFoo
+  class_eval &lt;&lt;-RUBY
+    def my_method
+      'Class evaluated method'
+    end
+  RUBY
+end
+
+# Defines the methods using define_method
+module DefineFoo
+  define_method 'my_method' do
+    'Define method method'
+  end
+end
+
+# Base Class
+class MyClass
+  def my_method
+    'class method'
+  end
+end
+
+# Subclass normal methods
+class MySubclass &lt; MyClass
+  include Foo
+end
+
+# class using class eval methods
+class CEClass &lt; MyClass
+  include ClassFoo
+end
+
+# Class using define method methods
+class DMClass &lt; MyClass
+  include DefineFoo
+end
+
+class_evaluated = CEClass.new
+dynamiclly_defined = DMClass.new
+normally_defined = MySubclass.new
+</code></pre>
+
+<p>Above we have three modules that each implement the same method in different ways; def, class_eval, and define_method. Each module has been included in its own class.</p>
+
+<p>With the help of RubyVM&rsquo;s RubyVM::InstructionSequence we can get a human readable string of instruction sequences for a specific method. Using the disassemble method we will see each instruction.</p>
+
+<h1>Using def</h1>
+
+<pre><code>irb(main):023:0&gt; puts RubyVM::InstructionSequence.disasm(normally_defined.method(:my_method))
+== disasm: &lt;rubyvm::instructionsequence:my_method&gt;
+0000 trace            8                                               (  20)
+0002 trace            1                                               (  21)
+0004 putstring        "module method"
+0006 trace            16                                              (  22)
+0008 leave                                                            (  21)
+&lt;/rubyvm::instructionsequence:my_method&gt;
+Using class_eval
+irb(main):019:0&gt; puts RubyVM::InstructionSequence.disasm(class_evaluated.method(:my_method))
+== disasm: &lt;rubyvm::instructionsequence:my_method&gt;===============
+0000 trace            8                                               (   1)
+0002 trace            1                                               (   2)
+0004 putstring        "Class evaluated method"
+0006 trace            16                                              (   3)
+0008 leave                                                            (   2)
+&lt;/rubyvm::instructionsequence:my_method&gt;
+Using define_method
+irb(main):020:0&gt; puts RubyVM::InstructionSequence.disasm(dynamiclly_evaluated.method(:my_method))
+== disasm: &lt;rubyvm::instructionsequence:block in=""&gt;&lt;module:definefoo&gt;@/Users/brian.mehrman/ruby_projects/lightning_talks/class_eval-vs-define_method/dynamic_methods.rb&gt;
+== catch table
+| catch type: redo   st: 0002 ed: 0006 sp: 0000 cont: 0002
+| catch type: next   st: 0002 ed: 0006 sp: 0000 cont: 0006
+|------------------------------------------------------------------------
+0000 trace            256                                             (  13)
+0002 trace            1                                               (  14)
+0004 putstring        "Define method method"
+0006 trace            512                                             (  15)
+0008 leave                                                            (  14)
+&lt;/module:definefoo&gt;&lt;/rubyvm::instructionsequence:block&gt;
+</code></pre>
+
+<p>At a quick glance we can see a major difference between the instructions for the method created using define_method. This extra step helps to slow down the methods execution. What is this extra step from, one word &lsquo;closures&rsquo;.</p>
+
+<h1>Closures</h1>
+
+<p>Blocks, Procs, and Lambdas are types of closures that are used everyday. A closure simply put is a self contained section of code that can be passed around that you can execute at a later point in your code.</p>
+
+<pre><code>arr = [1,2,3]
+
+
+# Block
+def log(&amp;block)
+  block.call
+end
+
+log do
+  puts arr.first
+end
+
+# Proc
+log = Proc.new { |arg| puts arg }
+log.call(arr.first)
+
+# Lambdas
+log = lambda { |arg| puts arg }
+log.call(arr.first)
+</code></pre>
+
+<p>These closures can be great to store code that you need to execute later, however executing that code later comes at a performance cost.</p>
+
+<p>In the case of define_method, the block passed to define_method is stored for use later by instance_eval. It is not clear exactly when the instance_eval occurs, whether it is when the method is defined or when it is executed is not entirely clear.</p>
+
+<p>The class_eval instantiates a new parser and compiles the source. Each method definition in the class_eval version does not share instruction sequences, where the define_method version does.</p>
+
+<h1>Conclusion</h1>
+
+<p>While define_method is quick to create your method it is slower to execute. It also is placed higher up the ancestor chain, slowing the method lookup as well. Define method is great when you need to create a method that will be used in low volume. Using class_eval is slower to define the method, yet it provides the benefit of executing faster than if it were defined using define_method. The methods defined using class_eval also are placed lower in the ancestor chain.</p>
+
+<p>Meta-programming is a great way to dry up your code and create code that can essentially write itself. This benefit comes at a cost, either at compile time or at run time. Knowing what that cost is can help in deciding what approach you show take.</p>
+</div>
+  
+  
+
+
+    </article>
+  
   <div class="pagination">
     
-    <a href="/blog/archives">Blog Archives</a>
     
   </div>
 </div>
@@ -60,13 +296,14 @@
       </fieldset>
     </form>
   
+  <a href="/blog/archives">Blog Archives</a>
   
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2018/03/25/rails-docker-app/">Rails Docker App</a>
+        <a href="/blog/2017/04/26/class-eval-vs-define-method/">class_eval vs define_method</a>
       </li>
     
   </ul>
@@ -83,7 +320,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2018 - Your Name -
+  Copyright &copy; 2018 - Brian Mehrman -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
@@ -111,7 +348,8 @@
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
-<script src="/javascripts/aharris.js"></script>
+<script src="/javascripts/main.js"></script>
+
 
 </body>
 </html>

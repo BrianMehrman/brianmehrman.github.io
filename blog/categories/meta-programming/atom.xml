@@ -4,7 +4,7 @@
   <title><![CDATA[Category: meta programming | Brian Mehrman]]></title>
   <link href="http://brianmehrman.github.io/blog/categories/meta-programming/atom.xml" rel="self"/>
   <link href="http://brianmehrman.github.io/"/>
-  <updated>2018-06-17T15:42:53-05:00</updated>
+  <updated>2018-06-18T08:58:17-05:00</updated>
   <id>http://brianmehrman.github.io/</id>
   <author>
     <name><![CDATA[Brian Mehrman]]></name>
@@ -23,6 +23,9 @@
 <p>Having to write redundant methods can lead to hundreds of lines of code that can
 be hard to maintain. Meta programming provides us with tools that allow us to write
 code that writes its self.</p>
+
+<!--more-->
+
 
 <h1>Class Eval</h1>
 

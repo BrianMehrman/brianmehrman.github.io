@@ -5,14 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - Brian Mehrman</title>
+  <title>Git Tips - Brian Mehrman</title>
   <meta name="author" content="Brian Mehrman">
 
   
-  <meta name="description" content="Blog Archive 2018 Postgresql Record Locking
-Jun 23 2018 rubypostgresql Optimistic vs Pessimistic Locking
-May 29 2018 rubyrailspostgres Git Tips
-Feb &hellip;">
+  <meta name="description" content="Git Git is a free version control system designed for both small and large projects. Tips Rebase Whenever I am working on a project with other &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -21,7 +18,7 @@ Feb &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://brianmehrman.github.io/blog/archives/">
+  <link rel="canonical" href="http://brianmehrman.github.io/blog/2018/02/06/git-tips/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -56,80 +53,134 @@ Feb &hellip;">
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      <h1 class="entry-title">Git Tips</h1>
     
   </header>
+
+
+
+
+<span class="categories">
   
-  <div id="blog-archives">
-
-
-
+    
+    <span class="category">
+        git
+    </span>
+    
   
-  <h2>2018</h2>
-
-<article>
-  
-<h1><a href="/blog/2018/06/23/database-record-locking/">Postgresql Record Locking</a></h1>
-<time datetime="2018-06-23T14:21:14-05:00" pubdate><span class='month'>Jun</span> <span class='day'>23</span> <span class='year'>2018</span></time>
-
-<footer>
-  <span class="categories">rubypostgresql</span>
-</footer>
+</span>
 
 
-</article>
+<div class="entry-content"><h1>Git</h1>
+
+<p>Git is a free version control system designed for both small and large projects.</p>
+
+<!--more-->
 
 
+<h1>Tips</h1>
 
-<article>
-  
-<h1><a href="/blog/2018/05/29/optimistic-vs-pessimistic-locking/">Optimistic vs Pessimistic Locking</a></h1>
-<time datetime="2018-05-29T14:20:45-05:00" pubdate><span class='month'>May</span> <span class='day'>29</span> <span class='year'>2018</span></time>
+<h2>Rebase</h2>
 
-<footer>
-  <span class="categories">rubyrailspostgres</span>
-</footer>
+<p>Whenever I am working on a project with other developers I find that I need to rebase
+my feature branch with the common branch the rest of the team is using. This branch
+is usually called <code>dev</code> or <code>ci</code>.</p>
 
+<pre><code>$ git fetch
+</code></pre>
 
-</article>
+<p>To make sure I have the latest branches I run a <code>fetch</code> to update all my local branches.</p>
 
+<pre><code>$ git rebase -i origin/dev my_branch
+</code></pre>
 
+<p>Rebase can work on <code>local</code> branches as well as <code>remote</code> branches. In the above example
+I rebased my branch on the <code>remote</code> version of <code>dev</code>.
+The <code>-i</code> flag stands for interactive. This allows me to check the commits that I
+am rebasing onto the dev branch.</p>
 
-<article>
-  
-<h1><a href="/blog/2018/02/06/git-tips/">Git Tips</a></h1>
-<time datetime="2018-02-06T08:23:09-06:00" pubdate><span class='month'>Feb</span> <span class='day'>06</span> <span class='year'>2018</span></time>
+<h2>Reset</h2>
 
-<footer>
-  <span class="categories">git</span>
-</footer>
+<h3>HEAD</h3>
 
+<pre><code>$ git reset HEAD
+</code></pre>
 
-</article>
+<p>This command will reset my current branch to whatever the latest commit is. This
+is a great way to clean up a branch and start from where you last committed.</p>
 
+<pre><code>$ git reset HEAD~
+</code></pre>
 
+<p>The <code>~</code> (tilde) character next to <code>HEAD</code> tells git to go back 1 commit. I use this
+command to remove bad commits. Resetting the commit will unstage the files from
+the previous commit.</p>
 
-  
-  <h2>2017</h2>
+<h2>Delete Branches</h2>
 
-<article>
-  
-<h1><a href="/blog/2017/04/26/class-eval-vs-define-method/">class_eval vs define_method</a></h1>
-<time datetime="2017-04-26T17:10:42-05:00" pubdate><span class='month'>Apr</span> <span class='day'>26</span> <span class='year'>2017</span></time>
+<pre><code>git branch -d my_branch
+</code></pre>
 
-<footer>
-  <span class="categories">rubymeta programming</span>
-</footer>
+<p>This will delete the branch named <code>my_branch</code>, only if the branch has been merged.</p>
 
+<pre><code>git branch -D my_branch
+</code></pre>
 
-</article>
+<p>This will delete the branch even if the branch has not been merged.</p>
 
+<pre><code>git branch --list
+</code></pre>
+
+<p>Lists out all the branches that are local to your machine.</p>
+
+<pre><code>git branch -D $(git branch --list hot*)
+</code></pre>
+
+<p>This deletes all branches prefixed with hot</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
+<span class="byline author vcard">Posted by <span class="fn">Brian Mehrman</span></span>
+
+      
+
+
+
+
+
+
+
+
+
+
+<time datetime="2018-02-06T08:23:09-06:00" pubdate data-updated="true"><span class='month'>Feb</span> <span class='day'>06</span> <span class='year'>2018</span></time>
+    </p>
+    
+      <div class="sharing">
   
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://brianmehrman.github.io/blog/2018/02/06/git-tips/" data-via="brianmehrman" data-counturl="http://brianmehrman.github.io/blog/2018/02/06/git-tips/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2017/04/26/class-eval-vs-define-method/" title="Previous Post: class_eval vs define_method">&laquo; class_eval vs define_method</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2018/05/29/optimistic-vs-pessimistic-locking/" title="Next Post: Optimistic vs Pessimistic Locking">Optimistic vs Pessimistic Locking &raquo;</a>
+      
+    </p>
+  </footer>
 </article>
 
 </div>

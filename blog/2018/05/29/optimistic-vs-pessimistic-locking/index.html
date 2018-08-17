@@ -1,0 +1,389 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Optimistic vs Pessimistic Locking - Brian Mehrman</title>
+  <meta name="author" content="Brian Mehrman">
+
+  
+  <meta name="description" content="Data integrity is at risk once two sessions begin to work on the same records&hellip;
+- Martin Fowler Optimistic Locking Is a data access strategy &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://brianmehrman.github.io/blog/2018/05/29/optimistic-vs-pessimistic-locking/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="atom.xml" rel="alternate" title="Brian Mehrman" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Brian Mehrman</a></h1>
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Optimistic vs Pessimistic Locking</h1>
+    
+  </header>
+
+
+
+
+<span class="categories">
+  
+    
+    <span class="category">
+        ruby
+    </span>
+    
+    <span class="category">
+        rails
+    </span>
+    
+    <span class="category">
+        postgres
+    </span>
+    
+  
+</span>
+
+
+<div class="entry-content"><blockquote><p>Data integrity is at risk once two sessions begin to work on the same records&hellip;
+- Martin Fowler</p></blockquote>
+
+<h1>Optimistic Locking</h1>
+
+<p>Is a data access strategy where it is assumed that the chance of conflict between sessions is very low. Changes from one session are validated before being committed to the database.</p>
+
+<h1>Pessimistic Locking</h1>
+
+<p>This an opposing data access strategy assumes that conflicts between sessions is highly likely. Conflicts are prevented by forcing all transactions to obtain a lock on the data (record or table) before it can start to use it.</p>
+
+<!--more-->
+
+
+<hr />
+
+<h1>Ruby on Rails</h1>
+
+<p>Rails has optimistic and pessimistic locking built into the <code>ActiveRecord</code> gem.</p>
+
+<h2>Using Optimistic</h2>
+
+<p>To enable optimistic locking you only need to add a <code>lock_version</code> column to your
+table schema.</p>
+
+<pre><code class="ruby">t.integer  "lock_version", default: 0
+</code></pre>
+
+<p><img src="/images/toys_db-1.jpg" alt="toy table" /></p>
+
+<p>You may also specify a different column like:</p>
+
+<pre><code class="ruby">class Toy &lt; ActiveRecord::Base
+  self.locking_column = :lock_toy
+end
+</code></pre>
+
+<p>Rails uses this column to keep two sessions from updating the same record at the
+same time. The <code>lock_version</code> is incremented every time the record is saved. Whenever
+the record is updated the correct lock version must be used when saved. If the
+wrong <code>lock_version</code> is provided an error will be thrown.</p>
+
+<p>When two sessions are running at the same time you can see the problem with optimistic
+locking.</p>
+
+<pre><code class="irb"># Alice’s session
+alice:001:0&gt; alice = Person.find_by(name: ’Alice’)
+alice:002:0&gt; toy = Toy.find_by(name: 'racecar')
+alice:003:0&gt; toy.person_id = alice.id
+alice:004:0&gt; toy.save!
+true
+</code></pre>
+
+<pre><code class="irb">Bob’s session
+bob:001:0&gt; bob= Person.find_by(name: Bob’)
+bob:002:0&gt; toy = Toy.find_by(name: 'racecar')
+bob:003:0&gt; toy.person_id = bob
+bob:004:0&gt; toy.save!
+ActiveRecord::StaleObjectError: Attempted to update a stale object: Toy.    from bob:4
+</code></pre>
+
+<h2>Using Pessimistic</h2>
+
+<p>With pessimistic locking there is no &lsquo;enabling&rsquo; needed. Calling <code>lock</code> with a <code>find</code>
+query is all that is needed to use pessimistic locking in Rails.</p>
+
+<pre><code>Toy.lock.find_by(name: 'racecar')
+</code></pre>
+
+<p>The above code will lock the <code>racecar</code> Toy until the end of the transaction. Calling lock
+outside of a transaction will only lock the record for the single call.</p>
+
+<h3><strong>with_lock</strong></h3>
+
+<p>There is a way to begin a transaction and lock a record in a single call. The
+method <code>with_lock</code> will wrap a provided block within a <code>transaction</code> locking the
+model on which it was called.</p>
+
+<p>The examples below are for two pieces of code will will run at the same time in
+two different sessions.</p>
+
+<p><em>session Alice</em></p>
+
+<pre><code class="ruby">alice = Person.find_by(name: 'Alice')
+toy = Toy.find_by(name: 'racecar')
+
+toy.with_lock do
+  toy.person_id = alice.id
+  toy.save!
+end
+</code></pre>
+
+<p><em>session Bob</em></p>
+
+<pre><code class="ruby">bob = Person.find_by(name: 'Bob')
+toy = Toy.find_by(name: 'racecar')
+
+toy.with_lock do
+  toy.person_id = bob.id
+  toy.save!
+end
+</code></pre>
+
+<p>One of these sessions will get the lock before the other. For this example lets
+say that <em>Alice</em> got the lock first.</p>
+
+<pre><code class="bash">(Alice):004:0&gt; toy.with_lock do
+(Alice):005:1*   toy.person_id = alice.id
+(Alice):006:1&gt;   sleep(200)
+(Alice):007:1&gt;   toy.save!
+(Alice):008:1&gt; end
+   (1.3ms)  BEGIN
+  Toy Load (1.2ms)  SELECT  "toys".*
+                    FROM "toys"
+                    WHERE "toys"."id" = $1
+                    LIMIT $2 FOR UPDATE  [["id", 8], ["LIMIT", 1]]
+  SQL (3.3ms)  UPDATE "toys"
+               SET "person_id" = 3,
+                   "updated_at" = '2018-07-01 20:42:56.401262',
+                   "lock_version" = 11
+               WHERE "toys"."id" = $1
+               AND "toys"."lock_version" = $2  [["id", 8], ["lock_version", 10]]
+     (1.2ms)  COMMIT
+</code></pre>
+
+<p><em>Notice the 200 second sleep. This will allow us to see what would happen with a
+long running process</em></p>
+
+<pre><code class="bash">(Bob):006:0&gt; toy.with_lock do
+(Bob):007:1*   toy.person_id = bob.id
+(Bob):008:1&gt;   toy.save!
+(Bob):009:1&gt; end
+   (1.2ms)  BEGIN
+   Toy Load (198875.2ms)  SELECT  "toys".*
+                          FROM "toys"
+                          WHERE "toys"."id" = $1
+                          LIMIT $2 FOR UPDATE  [["id", 8], ["LIMIT", 1]]
+SQL (0.9ms)  UPDATE "toys"
+             SET "person_id" = 2,
+                 "updated_at" = '2018-07-01 20:42:56.410077',
+                 "lock_version" = 12
+             WHERE "toys"."id" = $1
+             AND "toys"."lock_version" = $2  [["id", 8], ["lock_version", 11]]
+ (1.1ms)  COMMIT
+</code></pre>
+
+<p>We can see the affect of the lock on the <em>Bob</em> session. If you look at how long
+the <code>Toy Load</code> took, <code>198875.2ms</code>. All of that time is the application waiting
+on the <em>Alice</em> session.</p>
+
+<h3><strong>lock!</strong></h3>
+
+<p>An alternative to <code>with_lock</code> is <code>lock!</code>. This will lock the record&rsquo;s row for the
+duration of the transaction.</p>
+
+<pre><code>ActiveRecord::Base.transaction do
+  alice = Person.find_by(name: 'Alice')
+  toy = Toy.find_by(name: 'racecar')
+  toy.lock!
+  toy.person_id = alice.id
+  toy.save!
+end
+</code></pre>
+
+<h2>Conclusion</h2>
+
+<p>Optimistic and Pessimistic locking each have their own purpose with benefits and problems.</p>
+
+<p>Optimistic locking is fine to have on enabled on most user managed models. It can
+be used to keep two users from updating the same record at the same time or from
+outdated data. Provided that the user form has the <em>lock_version</em> passed as part
+of the posted data.</p>
+
+<p>Pessimistic locking provides a way to use the database layer to determine if someone
+is using that data. This can be easy for updating a single table record, but becomes
+most difficult the more records you try to lock. You can use pessimistic locking
+to make the users wait to update their shared data or to notify the users that a
+person is updating a record or set of records.</p>
+
+<p>I would be careful with pessimistic locking. This can lead to database deadlocks.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+<span class="byline author vcard">Posted by <span class="fn">Brian Mehrman</span></span>
+
+      
+
+
+
+
+
+
+
+
+
+
+<time datetime="2018-05-29T14:20:45-05:00" pubdate data-updated="true"><span class='month'>May</span> <span class='day'>29</span> <span class='year'>2018</span></time>
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://brianmehrman.github.io/blog/2018/05/29/optimistic-vs-pessimistic-locking/" data-via="brianmehrman" data-counturl="http://brianmehrman.github.io/blog/2018/05/29/optimistic-vs-pessimistic-locking/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2018/02/06/git-tips/" title="Previous Post: Git Tips">&laquo; Git Tips</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2018/06/23/database-record-locking/" title="Next Post: Postgresql Record Locking">Postgresql Record Locking &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <form action="https://www.google.com/search" method="get">
+      <fieldset role="search">
+        <input type="hidden" name="q" value="site:brianmehrman.github.io" />
+        <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+      </fieldset>
+    </form>
+  
+  <a href="/blog/archives">Blog Archives</a>
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2018/06/23/database-record-locking/">Postgresql Record Locking</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/05/29/optimistic-vs-pessimistic-locking/">Optimistic vs Pessimistic Locking</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/02/06/git-tips/">Git Tips</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/04/26/class-eval-vs-define-method/">class_eval vs define_method</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2018 - Brian Mehrman -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="/javascripts/main.js"></script>
+
+
+</body>
+</html>

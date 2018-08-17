@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: git | Brian Mehrman]]></title>
+  <link href="http://brianmehrman.github.io/blog/categories/git/atom.xml" rel="self"/>
+  <link href="http://brianmehrman.github.io/"/>
+  <updated>2018-08-17T14:07:09-05:00</updated>
+  <id>http://brianmehrman.github.io/</id>
+  <author>
+    <name><![CDATA[Brian Mehrman]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Git Tips]]></title>
+    <link href="http://brianmehrman.github.io/blog/2018/02/06/git-tips/"/>
+    <updated>2018-02-06T08:23:09-06:00</updated>
+    <id>http://brianmehrman.github.io/blog/2018/02/06/git-tips</id>
+    <content type="html"><![CDATA[<h1>Git</h1>
+
+<p>Git is a free version control system designed for both small and large projects.</p>
+
+<!--more-->
+
+
+<h1>Tips</h1>
+
+<h2>Rebase</h2>
+
+<p>Whenever I am working on a project with other developers I find that I need to rebase
+my feature branch with the common branch the rest of the team is using. This branch
+is usually called <code>dev</code> or <code>ci</code>.</p>
+
+<pre><code>$ git fetch
+</code></pre>
+
+<p>To make sure I have the latest branches I run a <code>fetch</code> to update all my local branches.</p>
+
+<pre><code>$ git rebase -i origin/dev my_branch
+</code></pre>
+
+<p>Rebase can work on <code>local</code> branches as well as <code>remote</code> branches. In the above example
+I rebased my branch on the <code>remote</code> version of <code>dev</code>.
+The <code>-i</code> flag stands for interactive. This allows me to check the commits that I
+am rebasing onto the dev branch.</p>
+
+<h2>Reset</h2>
+
+<h3>HEAD</h3>
+
+<pre><code>$ git reset HEAD
+</code></pre>
+
+<p>This command will reset my current branch to whatever the latest commit is. This
+is a great way to clean up a branch and start from where you last committed.</p>
+
+<pre><code>$ git reset HEAD~
+</code></pre>
+
+<p>The <code>~</code> (tilde) character next to <code>HEAD</code> tells git to go back 1 commit. I use this
+command to remove bad commits. Resetting the commit will unstage the files from
+the previous commit.</p>
+
+<h2>Delete Branches</h2>
+
+<pre><code>git branch -d my_branch
+</code></pre>
+
+<p>This will delete the branch named <code>my_branch</code>, only if the branch has been merged.</p>
+
+<pre><code>git branch -D my_branch
+</code></pre>
+
+<p>This will delete the branch even if the branch has not been merged.</p>
+
+<pre><code>git branch --list
+</code></pre>
+
+<p>Lists out all the branches that are local to your machine.</p>
+
+<pre><code>git branch -D $(git branch --list hot*)
+</code></pre>
+
+<p>This deletes all branches prefixed with hot</p>
+]]></content>
+  </entry>
+  
+</feed>

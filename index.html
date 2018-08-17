@@ -9,8 +9,8 @@
   <meta name="author" content="Brian Mehrman">
 
   
-  <meta name="description" content="Meta Programming Having to write redundant methods can lead to hundreds of lines of code that can
-be hard to maintain. Meta programming provides us &hellip;">
+  <meta name="description" content="Database Lock Modes Postgresql provides different locking modes to control concurrency within the database.
+Locks are automatically acquired by most &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -55,6 +55,187 @@ be hard to maintain. Meta programming provides us &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2018/06/23/database-record-locking/">Postgresql Record Locking</a></h1>
+    
+  </header>
+
+
+  <div class='details'>
+    
+      <span class="meta">
+        
+
+
+
+
+
+
+
+
+
+
+<time datetime="2018-06-23T14:21:14-05:00" pubdate data-updated="true"><span class='month'>Jun</span> <span class='day'>23</span> <span class='year'>2018</span></time>
+        
+      </span>
+    
+    
+
+<span class="categories">
+  
+    
+    <span class="category">
+        ruby
+    </span>
+    
+    <span class="category">
+        postgresql
+    </span>
+    
+  
+</span>
+
+
+  </div>
+  <div class="entry-content"><h1>Database Lock Modes</h1>
+
+<p>Postgresql provides different locking modes to control concurrency within the database.
+Locks are automatically acquired by most Postgres commands to make sure tables are not
+dropped or modified while a command is executed. Locks can also be acquired manually
+for application level control.</p>
+
+<p>ActiveRecord provides the interface between the Rails application and the database.
+Using ActiveRecord we can create these database level locks.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2018/05/29/optimistic-vs-pessimistic-locking/">Optimistic vs Pessimistic Locking</a></h1>
+    
+  </header>
+
+
+  <div class='details'>
+    
+      <span class="meta">
+        
+
+
+
+
+
+
+
+
+
+
+<time datetime="2018-05-29T14:20:45-05:00" pubdate data-updated="true"><span class='month'>May</span> <span class='day'>29</span> <span class='year'>2018</span></time>
+        
+      </span>
+    
+    
+
+<span class="categories">
+  
+    
+    <span class="category">
+        ruby
+    </span>
+    
+    <span class="category">
+        rails
+    </span>
+    
+    <span class="category">
+        postgres
+    </span>
+    
+  
+</span>
+
+
+  </div>
+  <div class="entry-content"><blockquote><p>Data integrity is at risk once two sessions begin to work on the same records&hellip;
+- Martin Fowler</p></blockquote>
+
+<h1>Optimistic Locking</h1>
+
+<p>Is a data access strategy where it is assumed that the chance of conflict between sessions is very low. Changes from one session are validated before being committed to the database.</p>
+
+<h1>Pessimistic Locking</h1>
+
+<p>This an opposing data access strategy assumes that conflicts between sessions is highly likely. Conflicts are prevented by forcing all transactions to obtain a lock on the data (record or table) before it can start to use it.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2018/02/06/git-tips/">Git Tips</a></h1>
+    
+  </header>
+
+
+  <div class='details'>
+    
+      <span class="meta">
+        
+
+
+
+
+
+
+
+
+
+
+<time datetime="2018-02-06T08:23:09-06:00" pubdate data-updated="true"><span class='month'>Feb</span> <span class='day'>06</span> <span class='year'>2018</span></time>
+        
+      </span>
+    
+    
+
+<span class="categories">
+  
+    
+    <span class="category">
+        git
+    </span>
+    
+  
+</span>
+
+
+  </div>
+  <div class="entry-content"><h1>Git</h1>
+
+<p>Git is a free version control system designed for both small and large projects.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -133,6 +314,18 @@ code that writes its self.</p>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2018/06/23/database-record-locking/">Postgresql Record Locking</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/05/29/optimistic-vs-pessimistic-locking/">Optimistic vs Pessimistic Locking</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/02/06/git-tips/">Git Tips</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2017/04/26/class-eval-vs-define-method/">class_eval vs define_method</a>

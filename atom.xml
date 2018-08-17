@@ -3,7 +3,7 @@
   <title><![CDATA[Brian Mehrman]]></title>
   <link href="http://brianmehrman.github.io/atom.xml" rel="self"/>
   <link href="http://brianmehrman.github.io/"/>
-  <updated>2018-06-18T08:58:17-05:00</updated>
+  <updated>2018-08-17T14:07:09-05:00</updated>
   <id>http://brianmehrman.github.io/</id>
   <author>
     <name><![CDATA[Brian Mehrman]]></name>
@@ -11,6 +11,691 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Postgresql Record Locking]]></title>
+    <link href="http://brianmehrman.github.io/blog/2018/06/23/database-record-locking/"/>
+    <updated>2018-06-23T14:21:14-05:00</updated>
+    <id>http://brianmehrman.github.io/blog/2018/06/23/database-record-locking</id>
+    <content type="html"><![CDATA[<h1>Database Lock Modes</h1>
+
+<p>Postgresql provides different locking modes to control concurrency within the database.
+Locks are automatically acquired by most Postgres commands to make sure tables are not
+dropped or modified while a command is executed. Locks can also be acquired manually
+for application level control.</p>
+
+<p>ActiveRecord provides the interface between the Rails application and the database.
+Using ActiveRecord we can create these database level locks.</p>
+
+<!--more-->
+
+
+<h2>Setup</h2>
+
+<p>For the examples in this post we will be using the following data setup with a new Rails application.</p>
+
+<pre><code class="ruby"># Create the tables
+class CreatePeople &lt; ActiveRecord::Migration
+  def change
+    create_table :people do |t|
+      t.string :name
+      t.timestamps
+    end
+  end
+end
+
+class CreateToys &lt; ActiveRecord::Migration
+  def change
+    create_table :toys do |t|
+      t.string :name
+      t.references :person, foreign_key: true
+      t.timestamps
+    end
+  end
+end
+
+# Add Models
+class Toy &lt; ApplicationRecord
+  belongs_to :person, required: false
+end
+
+class Toy &lt; ApplicationRecord
+  belongs_to :person, required: false
+end
+
+# Generate some data
+people = %w(Dave Bob Alice Ace Bee Chip)
+
+people.each { |name| Person.find_or_create_by({ name: name }) }
+
+toys = %w(rocket plane ship yo-yo bike boat truck blocks house doll racecar thermonuclearbomb)
+
+toys.each { |toy_name| Toy.find_or_create_by({ name: toy_name }) }
+</code></pre>
+
+<h2>Table Level Locks</h2>
+
+<p>This table shows the which locks on a table (columns) will block a requested lock (rows).</p>
+
+<table>
+<thead>
+<tr>
+<th> Requested Lock Mode </th>
+<th style="text-align:center;"> ACCESS SHARE </th>
+<th style="text-align:center;"> ROW SHARE </th>
+<th style="text-align:center;"> ROW EXCLUSIVE </th>
+<th style="text-align:center;"> SHARE UPDATE EXCLUSIVE </th>
+<th style="text-align:center;"> SHARE </th>
+<th style="text-align:center;"> SHARE ROW EXCLUSIVE </th>
+<th style="text-align:center;"> EXCLUSIVE </th>
+<th style="text-align:center;"> ACCESS EXCLUSIVE </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> ACCESS SHARE </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;"> X </td>
+</tr>
+<tr>
+<td> ROW SHARE </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+</tr>
+<tr>
+<td> ROW EXCLUSIVE </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+</tr>
+<tr>
+<td> SHARE UPDATE EXCLUSIVE </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+</tr>
+<tr>
+<td> SHARE </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+</tr>
+<tr>
+<td> SHARE ROW EXCLUSIVE </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+</tr>
+<tr>
+<td> EXCLUSIVE </td>
+<td style="text-align:center;">   </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+</tr>
+<tr>
+<td> ACCESS EXCLUSIVE </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+<td style="text-align:center;"> X </td>
+</tr>
+</tbody>
+</table>
+
+
+<hr />
+
+<h3>Access Share</h3>
+
+<pre><code class="bash">AccessShareLock
+</code></pre>
+
+<p>Access share is the most common lock and is only blocked by an <code>ACCESS EXCLUSIVE</code>.</p>
+
+<p>A simple select on any table will acquire the <code>ACCESS SHARE</code> lock. Any table references
+for a query can create a lock on that referenced table.</p>
+
+<pre><code class="ruby">Toy.find_by(name: 'racecar')
+</code></pre>
+
+<p>The <code>find_by</code> method on an ActiveRecord object is an easy way to acquire the
+<code>ACCESS SHARE</code> lock. These locks only there while the query is running. A normal
+selection of a single row will not block the selection of the same row by another
+connection.</p>
+
+<hr />
+
+<h3>Share Row Exclusive</h3>
+
+<pre><code class="bash">ShareRowExclusiveLock
+</code></pre>
+
+<p>The <code>SHARE ROW EXCLUSIVE</code> is a lock that is not automatically acquired by any of the
+PostgreSQL commands. This lock is created by the user or the application that is
+connected to PostgreSQL.</p>
+
+<pre><code class="ruby">toy = Toy.find_by(name: 'racecar')
+toy.lock!
+toy.save!
+</code></pre>
+
+<p>In Rails you can acquire this lock by using the <code>lock!</code> method. This method is used
+by developers who want to use a <em>Pessimistic</em> locking strategy.</p>
+
+<h3>Access Exclusive</h3>
+
+<pre><code class="bash">AccessExclusiveLock
+</code></pre>
+
+<p>The <code>ACCESS EXCLUSIVE</code> lock will block all other locks from being acquired.</p>
+
+<p>This lock is acquired by the DROP TABLE, TRUNCATE, REINDEX, CLUSTER, VACUUM FULL,
+and REFRESH MATERIALIZED VIEW. The command ALTER TABLE can also acquire an
+<code>ACCESS EXCLUSIVE</code>.</p>
+
+<pre><code class="ruby">ActiveRecord::Migration.add_column :toys, :counter, :integer
+</code></pre>
+
+<p>Adding a column to a table will acquire an <code>ACCESS EXCLUSIVE</code> lock.</p>
+
+<hr />
+
+<p>For more information on the other database level locks and what commands create
+these locks please check out the PostgreSQL documentation <a href="https://www.postgresql.org/docs/9.4/static/explicit-locking.html">here</a>.</p>
+
+<hr />
+
+<h2>Deadlock</h2>
+
+<p>A deadlock is where 2 or more transactions attempt to acquire a lock the other holds.
+When this occurs neither process can proceed. When this occurs PostgreSQL will
+resolve the dead lock by aborting one of the transactions involved.</p>
+
+<p><img src="http://brianmehrman.github.io/images/deadlockSequence.png" title="deadlock between two sessions" alt="deadlock table" /></p>
+
+<h3>Example</h3>
+
+<p>Transaction A sends a request  to update the user on several toys. This requires
+locks to be acquired on the <code>Toys</code> table.</p>
+
+<pre><code class="ruby"># Transaction A: Bob picks up 5 toys
+ActiveRecord::Base.transaction do
+  bob = Person.find_by(name: 'Bob')
+  names = %w(bike yo-yo racecar truck rocket)
+
+  names.each do |toy_name|
+    toy = Toy.find_by(name: toy_name)
+    toy.lock!
+    toy.person = bob
+    sleep(5)
+    toy.save
+  end
+end
+</code></pre>
+
+<p>Transaction B sends a request to update the user on several toys as well. This
+list includes a couple of the same toys the first transaction is going to update.</p>
+
+<pre><code class="ruby"># Transaction B: Alice picks up 5 toys.
+ActiveRecord::Base.transaction do
+  alice = Person.find_by(name: 'Alice')
+  names = %w(rocket plane ship doll bike)
+
+  names.each do |toy_name|
+    toy = Toy.find_by(name: toy_name)
+    toy.lock!
+    toy.person = alice
+    sleep(5)
+    toy.save
+  end
+end
+</code></pre>
+
+<p>If both of these transactions are run at the same time you will see a dead lock
+occur when transaction A tries to acquire a lock on the same record transaction
+B has already acquired a lock for.</p>
+
+<pre><code class="bash">  (1.1ms)  BEGIN
+  Person Load (0.8ms)  SELECT  "people".* FROM "people" WHERE "people"."name" = $1 LIMIT $2  [["name", "Alice"], ["LIMIT", 1]]
+  Toy Load (0.8ms)  SELECT  "toys".* FROM "toys" WHERE "toys"."name" = $1 LIMIT $2  [["name", "rocket"], ["LIMIT", 1]]
+  Toy Load (0.7ms)  SELECT  "toys".* FROM "toys" WHERE "toys"."id" = $1 LIMIT $2 FOR UPDATE  [["id", 1], ["LIMIT", 1]]
+  Toy Load (1.4ms)  SELECT  "toys".* FROM "toys" WHERE "toys"."name" = $1 LIMIT $2  [["name", "bike"], ["LIMIT", 1]]
+  Toy Load (1002.7ms)  SELECT  "toys".* FROM "toys" WHERE "toys"."id" = $1 LIMIT $2 FOR UPDATE  [["id", 5], ["LIMIT", 1]]
+   (1.1ms)  ROLLBACK
+ActiveRecord::Deadlocked: PG::TRDeadlockDetected: ERROR:  deadlock detected
+DETAIL:  Process 1976 waits for ShareLock on transaction 82071; blocked by process 1978.
+Process 1978 waits for ShareLock on transaction 82070; blocked by process 1976.
+HINT:  See server log for query details.
+CONTEXT:  while locking tuple (0,29) in relation "toys"
+: SELECT  "toys".* FROM "toys" WHERE "toys"."id" = $1 LIMIT $2 FOR UPDATE
+    from (irb):75:in `block (2 levels) in irb_binding'
+    from (irb):73:in `each'
+    from (irb):73:in `block in irb_binding'
+    from (irb):69
+</code></pre>
+
+<h2>Displaying Locks</h2>
+
+<p>The locks acquired in PostgreSQL can be viewed using the <code>psql</code> client to query
+the PostgreSQL server.</p>
+
+<h3>Example</h3>
+
+<p>For this example we will need to open three connections to our rails console. To
+see these locks in action we will need to first add a lock to the database that
+will block all subsequent queries.</p>
+
+<p>In one of the rails consoles we will be creating a lock on the <code>Toys</code> table
+using the following command</p>
+
+<pre><code class="ruby">ActiveRecord::Base.transaction do
+  toy = Toy.find_by(name: 'racecar')
+  toy.lock!
+  sleep(3600) # wait for an hour
+  toy.save!
+end
+</code></pre>
+
+<p>This will create an <code>ExclusiveLock</code>. This will not block an <code>AccessShareLock</code>,
+but it will block an update. We will next try to update the same record from our
+second rails console.</p>
+
+<pre><code class="ruby">toy = Toy.find_by(name: 'racecar')
+toy.update(person_id: 1)
+</code></pre>
+
+<p>This update will attempt to acquire a <code>ShareLock</code> on the <code>toys</code> table. The
+<code>ExclusiveLock</code> will block the update. You can view this lock by quering the
+<code>pg_catalog.pg_locks</code> and the <code>pg_catalog.pg_stat_activity</code>.</p>
+
+<p>Using this SQL query below we can see which statement is blocking another.</p>
+
+<pre><code class="SQL">SELECT blocked_locks.pid             AS blocked_pid,
+  blocked_activity.usename           AS blocked_user,
+  blocking_locks.pid                 AS blocking_pid,
+  blocking_activity.usename          AS blocking_user,
+  blocked_activity.application_name  AS blocked_application,
+  blocking_activity.application_name AS blocking_application,
+  blocked_activity.query             AS blocked_statement,
+  blocking_activity.query            AS current_statement_in_blocking_process,
+  blocked_locks.mode                 AS blocked_mode,
+  blocking_locks.mode                AS blocking_mode
+FROM pg_catalog.pg_locks         blocked_locks
+JOIN pg_catalog.pg_stat_activity blocked_activity
+  ON blocked_activity.pid      = blocked_locks.pid
+JOIN pg_catalog.pg_locks         blocking_locks
+  ON blocking_locks.locktype   = blocked_locks.locktype
+  AND blocking_locks.DATABASE      IS NOT DISTINCT FROM blocked_locks.DATABASE
+  AND blocking_locks.relation      IS NOT DISTINCT FROM blocked_locks.relation
+  AND blocking_locks.page          IS NOT DISTINCT FROM blocked_locks.page
+  AND blocking_locks.tuple         IS NOT DISTINCT FROM blocked_locks.tuple
+  AND blocking_locks.virtualxid    IS NOT DISTINCT FROM blocked_locks.virtualxid
+  AND blocking_locks.transactionid IS NOT DISTINCT FROM blocked_locks.transactionid
+  AND blocking_locks.classid       IS NOT DISTINCT FROM blocked_locks.classid
+  AND blocking_locks.objid         IS NOT DISTINCT FROM blocked_locks.objid
+  AND blocking_locks.objsubid      IS NOT DISTINCT FROM blocked_locks.objsubid
+  AND blocking_locks.pid != blocked_locks.pid
+
+JOIN pg_catalog.pg_stat_activity blocking_activity ON blocking_activity.pid = blocking_locks.pid
+WHERE NOT blocked_locks.GRANTED;
+</code></pre>
+
+<p>This query should show you something that looks like this.</p>
+
+<pre><code class="bash">blocked_pid | blocked_user | blocking_pid | blocking_user |                                            blocked_statement                                            |                                  current_statement_in_blocking_process                                  | blocked_application | blocking_application |    blocked_mode     |    blocking_mode
+-------------+--------------+--------------+---------------+---------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------+---------------------+----------------------+---------------------+---------------------
+        2210 | postgres     |         2436 | postgres      | UPDATE "toys" SET "person_id" = $1, "updated_at" = $2 WHERE "toys"."id" = $3                            | SELECT  "toys".* FROM "toys" WHERE "toys"."id" = $1 LIMIT $2 FOR UPDATE                                 | rails_console       | rails_console        | ShareLock           | ExclusiveLock
+</code></pre>
+
+<p>Next we will create an <code>ACCESS EXCLUSIVE</code> to view how this lock can block all other
+queries on a table.</p>
+
+<pre><code class="ruby">ActiveRecord::Base.transaction do
+  ActiveRecord::Migration.add_column :toys, :countz, :integer
+  sleep(3600) # wait for an hour
+end
+</code></pre>
+
+<p>This migration creates an <code>ALTER TABLE</code> command that will acquire an <code>ACCESS EXCLUSIVE</code>
+lock on the <code>toys</code> table.</p>
+
+<p>This lock will block any other attempts to acquire a lock on the <code>toys</code> table. Allowing
+us to queue up queries that we will see in the <code>pg_locks</code>.</p>
+
+<p>Below are examples of other locks you can create.</p>
+
+<h3>Row Share Lock</h3>
+
+<pre><code class="ruby">Toy.find_by_sql("SELECT * FROM toys WHERE name = 'racecar' FOR UPDATE")
+</code></pre>
+
+<h3>Row Exclusive Lock</h3>
+
+<pre><code class="ruby">toy = Toy.find_by(name: 'racecar')
+toy.update(person_id: 1)
+toy
+</code></pre>
+
+<h3>Share</h3>
+
+<pre><code class="ruby">ActiveRecord::Migration.add_index(:toys, :name)
+</code></pre>
+
+<h2>Summary</h2>
+
+<p>Locks exist to protect data integrity between concurrent transactions. They allow
+us ensure that a long running query or update will not be corrupted by a conflicting
+change to the table(s) you are using.</p>
+
+<p>While reading from a table will not block other reads you must be mindful of when
+you are planning on running migrations that alter table that are read by multiple
+users at once. Specially if those tables require a user to look a multiple records
+in one query. An <code>ALTER TABLE</code> can easily block a user from reading a record.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Optimistic vs Pessimistic Locking]]></title>
+    <link href="http://brianmehrman.github.io/blog/2018/05/29/optimistic-vs-pessimistic-locking/"/>
+    <updated>2018-05-29T14:20:45-05:00</updated>
+    <id>http://brianmehrman.github.io/blog/2018/05/29/optimistic-vs-pessimistic-locking</id>
+    <content type="html"><![CDATA[<blockquote><p>Data integrity is at risk once two sessions begin to work on the same records&hellip;
+- Martin Fowler</p></blockquote>
+
+<h1>Optimistic Locking</h1>
+
+<p>Is a data access strategy where it is assumed that the chance of conflict between sessions is very low. Changes from one session are validated before being committed to the database.</p>
+
+<h1>Pessimistic Locking</h1>
+
+<p>This an opposing data access strategy assumes that conflicts between sessions is highly likely. Conflicts are prevented by forcing all transactions to obtain a lock on the data (record or table) before it can start to use it.</p>
+
+<!--more-->
+
+
+<hr />
+
+<h1>Ruby on Rails</h1>
+
+<p>Rails has optimistic and pessimistic locking built into the <code>ActiveRecord</code> gem.</p>
+
+<h2>Using Optimistic</h2>
+
+<p>To enable optimistic locking you only need to add a <code>lock_version</code> column to your
+table schema.</p>
+
+<pre><code class="ruby">t.integer  "lock_version", default: 0
+</code></pre>
+
+<p><img src="http://brianmehrman.github.io/images/toys_db-1.jpg" alt="toy table" /></p>
+
+<p>You may also specify a different column like:</p>
+
+<pre><code class="ruby">class Toy &lt; ActiveRecord::Base
+  self.locking_column = :lock_toy
+end
+</code></pre>
+
+<p>Rails uses this column to keep two sessions from updating the same record at the
+same time. The <code>lock_version</code> is incremented every time the record is saved. Whenever
+the record is updated the correct lock version must be used when saved. If the
+wrong <code>lock_version</code> is provided an error will be thrown.</p>
+
+<p>When two sessions are running at the same time you can see the problem with optimistic
+locking.</p>
+
+<pre><code class="irb"># Alice’s session
+alice:001:0&gt; alice = Person.find_by(name: ’Alice’)
+alice:002:0&gt; toy = Toy.find_by(name: 'racecar')
+alice:003:0&gt; toy.person_id = alice.id
+alice:004:0&gt; toy.save!
+true
+</code></pre>
+
+<pre><code class="irb">Bob’s session
+bob:001:0&gt; bob= Person.find_by(name: Bob’)
+bob:002:0&gt; toy = Toy.find_by(name: 'racecar')
+bob:003:0&gt; toy.person_id = bob
+bob:004:0&gt; toy.save!
+ActiveRecord::StaleObjectError: Attempted to update a stale object: Toy.    from bob:4
+</code></pre>
+
+<h2>Using Pessimistic</h2>
+
+<p>With pessimistic locking there is no &lsquo;enabling&rsquo; needed. Calling <code>lock</code> with a <code>find</code>
+query is all that is needed to use pessimistic locking in Rails.</p>
+
+<pre><code>Toy.lock.find_by(name: 'racecar')
+</code></pre>
+
+<p>The above code will lock the <code>racecar</code> Toy until the end of the transaction. Calling lock
+outside of a transaction will only lock the record for the single call.</p>
+
+<h3><strong>with_lock</strong></h3>
+
+<p>There is a way to begin a transaction and lock a record in a single call. The
+method <code>with_lock</code> will wrap a provided block within a <code>transaction</code> locking the
+model on which it was called.</p>
+
+<p>The examples below are for two pieces of code will will run at the same time in
+two different sessions.</p>
+
+<p><em>session Alice</em></p>
+
+<pre><code class="ruby">alice = Person.find_by(name: 'Alice')
+toy = Toy.find_by(name: 'racecar')
+
+toy.with_lock do
+  toy.person_id = alice.id
+  toy.save!
+end
+</code></pre>
+
+<p><em>session Bob</em></p>
+
+<pre><code class="ruby">bob = Person.find_by(name: 'Bob')
+toy = Toy.find_by(name: 'racecar')
+
+toy.with_lock do
+  toy.person_id = bob.id
+  toy.save!
+end
+</code></pre>
+
+<p>One of these sessions will get the lock before the other. For this example lets
+say that <em>Alice</em> got the lock first.</p>
+
+<pre><code class="bash">(Alice):004:0&gt; toy.with_lock do
+(Alice):005:1*   toy.person_id = alice.id
+(Alice):006:1&gt;   sleep(200)
+(Alice):007:1&gt;   toy.save!
+(Alice):008:1&gt; end
+   (1.3ms)  BEGIN
+  Toy Load (1.2ms)  SELECT  "toys".*
+                    FROM "toys"
+                    WHERE "toys"."id" = $1
+                    LIMIT $2 FOR UPDATE  [["id", 8], ["LIMIT", 1]]
+  SQL (3.3ms)  UPDATE "toys"
+               SET "person_id" = 3,
+                   "updated_at" = '2018-07-01 20:42:56.401262',
+                   "lock_version" = 11
+               WHERE "toys"."id" = $1
+               AND "toys"."lock_version" = $2  [["id", 8], ["lock_version", 10]]
+     (1.2ms)  COMMIT
+</code></pre>
+
+<p><em>Notice the 200 second sleep. This will allow us to see what would happen with a
+long running process</em></p>
+
+<pre><code class="bash">(Bob):006:0&gt; toy.with_lock do
+(Bob):007:1*   toy.person_id = bob.id
+(Bob):008:1&gt;   toy.save!
+(Bob):009:1&gt; end
+   (1.2ms)  BEGIN
+   Toy Load (198875.2ms)  SELECT  "toys".*
+                          FROM "toys"
+                          WHERE "toys"."id" = $1
+                          LIMIT $2 FOR UPDATE  [["id", 8], ["LIMIT", 1]]
+SQL (0.9ms)  UPDATE "toys"
+             SET "person_id" = 2,
+                 "updated_at" = '2018-07-01 20:42:56.410077',
+                 "lock_version" = 12
+             WHERE "toys"."id" = $1
+             AND "toys"."lock_version" = $2  [["id", 8], ["lock_version", 11]]
+ (1.1ms)  COMMIT
+</code></pre>
+
+<p>We can see the affect of the lock on the <em>Bob</em> session. If you look at how long
+the <code>Toy Load</code> took, <code>198875.2ms</code>. All of that time is the application waiting
+on the <em>Alice</em> session.</p>
+
+<h3><strong>lock!</strong></h3>
+
+<p>An alternative to <code>with_lock</code> is <code>lock!</code>. This will lock the record&rsquo;s row for the
+duration of the transaction.</p>
+
+<pre><code>ActiveRecord::Base.transaction do
+  alice = Person.find_by(name: 'Alice')
+  toy = Toy.find_by(name: 'racecar')
+  toy.lock!
+  toy.person_id = alice.id
+  toy.save!
+end
+</code></pre>
+
+<h2>Conclusion</h2>
+
+<p>Optimistic and Pessimistic locking each have their own purpose with benefits and problems.</p>
+
+<p>Optimistic locking is fine to have on enabled on most user managed models. It can
+be used to keep two users from updating the same record at the same time or from
+outdated data. Provided that the user form has the <em>lock_version</em> passed as part
+of the posted data.</p>
+
+<p>Pessimistic locking provides a way to use the database layer to determine if someone
+is using that data. This can be easy for updating a single table record, but becomes
+most difficult the more records you try to lock. You can use pessimistic locking
+to make the users wait to update their shared data or to notify the users that a
+person is updating a record or set of records.</p>
+
+<p>I would be careful with pessimistic locking. This can lead to database deadlocks.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Git Tips]]></title>
+    <link href="http://brianmehrman.github.io/blog/2018/02/06/git-tips/"/>
+    <updated>2018-02-06T08:23:09-06:00</updated>
+    <id>http://brianmehrman.github.io/blog/2018/02/06/git-tips</id>
+    <content type="html"><![CDATA[<h1>Git</h1>
+
+<p>Git is a free version control system designed for both small and large projects.</p>
+
+<!--more-->
+
+
+<h1>Tips</h1>
+
+<h2>Rebase</h2>
+
+<p>Whenever I am working on a project with other developers I find that I need to rebase
+my feature branch with the common branch the rest of the team is using. This branch
+is usually called <code>dev</code> or <code>ci</code>.</p>
+
+<pre><code>$ git fetch
+</code></pre>
+
+<p>To make sure I have the latest branches I run a <code>fetch</code> to update all my local branches.</p>
+
+<pre><code>$ git rebase -i origin/dev my_branch
+</code></pre>
+
+<p>Rebase can work on <code>local</code> branches as well as <code>remote</code> branches. In the above example
+I rebased my branch on the <code>remote</code> version of <code>dev</code>.
+The <code>-i</code> flag stands for interactive. This allows me to check the commits that I
+am rebasing onto the dev branch.</p>
+
+<h2>Reset</h2>
+
+<h3>HEAD</h3>
+
+<pre><code>$ git reset HEAD
+</code></pre>
+
+<p>This command will reset my current branch to whatever the latest commit is. This
+is a great way to clean up a branch and start from where you last committed.</p>
+
+<pre><code>$ git reset HEAD~
+</code></pre>
+
+<p>The <code>~</code> (tilde) character next to <code>HEAD</code> tells git to go back 1 commit. I use this
+command to remove bad commits. Resetting the commit will unstage the files from
+the previous commit.</p>
+
+<h2>Delete Branches</h2>
+
+<pre><code>git branch -d my_branch
+</code></pre>
+
+<p>This will delete the branch named <code>my_branch</code>, only if the branch has been merged.</p>
+
+<pre><code>git branch -D my_branch
+</code></pre>
+
+<p>This will delete the branch even if the branch has not been merged.</p>
+
+<pre><code>git branch --list
+</code></pre>
+
+<p>Lists out all the branches that are local to your machine.</p>
+
+<pre><code>git branch -D $(git branch --list hot*)
+</code></pre>
+
+<p>This deletes all branches prefixed with hot</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[class_eval vs define_method]]></title>

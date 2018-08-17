@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: postgres | Brian Mehrman]]></title>
+  <link href="http://brianmehrman.github.io/blog/categories/postgres/atom.xml" rel="self"/>
+  <link href="http://brianmehrman.github.io/"/>
+  <updated>2018-08-17T14:07:09-05:00</updated>
+  <id>http://brianmehrman.github.io/</id>
+  <author>
+    <name><![CDATA[Brian Mehrman]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Optimistic vs Pessimistic Locking]]></title>
+    <link href="http://brianmehrman.github.io/blog/2018/05/29/optimistic-vs-pessimistic-locking/"/>
+    <updated>2018-05-29T14:20:45-05:00</updated>
+    <id>http://brianmehrman.github.io/blog/2018/05/29/optimistic-vs-pessimistic-locking</id>
+    <content type="html"><![CDATA[<blockquote><p>Data integrity is at risk once two sessions begin to work on the same records&hellip;
+- Martin Fowler</p></blockquote>
+
+<h1>Optimistic Locking</h1>
+
+<p>Is a data access strategy where it is assumed that the chance of conflict between sessions is very low. Changes from one session are validated before being committed to the database.</p>
+
+<h1>Pessimistic Locking</h1>
+
+<p>This an opposing data access strategy assumes that conflicts between sessions is highly likely. Conflicts are prevented by forcing all transactions to obtain a lock on the data (record or table) before it can start to use it.</p>
+
+<!--more-->
+
+
+<hr />
+
+<h1>Ruby on Rails</h1>
+
+<p>Rails has optimistic and pessimistic locking built into the <code>ActiveRecord</code> gem.</p>
+
+<h2>Using Optimistic</h2>
+
+<p>To enable optimistic locking you only need to add a <code>lock_version</code> column to your
+table schema.</p>
+
+<pre><code class="ruby">t.integer  "lock_version", default: 0
+</code></pre>
+
+<p><img src="/images/toys_db-1.jpg" alt="toy table" /></p>
+
+<p>You may also specify a different column like:</p>
+
+<pre><code class="ruby">class Toy &lt; ActiveRecord::Base
+  self.locking_column = :lock_toy
+end
+</code></pre>
+
+<p>Rails uses this column to keep two sessions from updating the same record at the
+same time. The <code>lock_version</code> is incremented every time the record is saved. Whenever
+the record is updated the correct lock version must be used when saved. If the
+wrong <code>lock_version</code> is provided an error will be thrown.</p>
+
+<p>When two sessions are running at the same time you can see the problem with optimistic
+locking.</p>
+
+<pre><code class="irb"># Alice’s session
+alice:001:0&gt; alice = Person.find_by(name: ’Alice’)
+alice:002:0&gt; toy = Toy.find_by(name: 'racecar')
+alice:003:0&gt; toy.person_id = alice.id
+alice:004:0&gt; toy.save!
+true
+</code></pre>
+
+<pre><code class="irb">Bob’s session
+bob:001:0&gt; bob= Person.find_by(name: Bob’)
+bob:002:0&gt; toy = Toy.find_by(name: 'racecar')
+bob:003:0&gt; toy.person_id = bob
+bob:004:0&gt; toy.save!
+ActiveRecord::StaleObjectError: Attempted to update a stale object: Toy.    from bob:4
+</code></pre>
+
+<h2>Using Pessimistic</h2>
+
+<p>With pessimistic locking there is no &lsquo;enabling&rsquo; needed. Calling <code>lock</code> with a <code>find</code>
+query is all that is needed to use pessimistic locking in Rails.</p>
+
+<pre><code>Toy.lock.find_by(name: 'racecar')
+</code></pre>
+
+<p>The above code will lock the <code>racecar</code> Toy until the end of the transaction. Calling lock
+outside of a transaction will only lock the record for the single call.</p>
+
+<h3><strong>with_lock</strong></h3>
+
+<p>There is a way to begin a transaction and lock a record in a single call. The
+method <code>with_lock</code> will wrap a provided block within a <code>transaction</code> locking the
+model on which it was called.</p>
+
+<p>The examples below are for two pieces of code will will run at the same time in
+two different sessions.</p>
+
+<p><em>session Alice</em></p>
+
+<pre><code class="ruby">alice = Person.find_by(name: 'Alice')
+toy = Toy.find_by(name: 'racecar')
+
+toy.with_lock do
+  toy.person_id = alice.id
+  toy.save!
+end
+</code></pre>
+
+<p><em>session Bob</em></p>
+
+<pre><code class="ruby">bob = Person.find_by(name: 'Bob')
+toy = Toy.find_by(name: 'racecar')
+
+toy.with_lock do
+  toy.person_id = bob.id
+  toy.save!
+end
+</code></pre>
+
+<p>One of these sessions will get the lock before the other. For this example lets
+say that <em>Alice</em> got the lock first.</p>
+
+<pre><code class="bash">(Alice):004:0&gt; toy.with_lock do
+(Alice):005:1*   toy.person_id = alice.id
+(Alice):006:1&gt;   sleep(200)
+(Alice):007:1&gt;   toy.save!
+(Alice):008:1&gt; end
+   (1.3ms)  BEGIN
+  Toy Load (1.2ms)  SELECT  "toys".*
+                    FROM "toys"
+                    WHERE "toys"."id" = $1
+                    LIMIT $2 FOR UPDATE  [["id", 8], ["LIMIT", 1]]
+  SQL (3.3ms)  UPDATE "toys"
+               SET "person_id" = 3,
+                   "updated_at" = '2018-07-01 20:42:56.401262',
+                   "lock_version" = 11
+               WHERE "toys"."id" = $1
+               AND "toys"."lock_version" = $2  [["id", 8], ["lock_version", 10]]
+     (1.2ms)  COMMIT
+</code></pre>
+
+<p><em>Notice the 200 second sleep. This will allow us to see what would happen with a
+long running process</em></p>
+
+<pre><code class="bash">(Bob):006:0&gt; toy.with_lock do
+(Bob):007:1*   toy.person_id = bob.id
+(Bob):008:1&gt;   toy.save!
+(Bob):009:1&gt; end
+   (1.2ms)  BEGIN
+   Toy Load (198875.2ms)  SELECT  "toys".*
+                          FROM "toys"
+                          WHERE "toys"."id" = $1
+                          LIMIT $2 FOR UPDATE  [["id", 8], ["LIMIT", 1]]
+SQL (0.9ms)  UPDATE "toys"
+             SET "person_id" = 2,
+                 "updated_at" = '2018-07-01 20:42:56.410077',
+                 "lock_version" = 12
+             WHERE "toys"."id" = $1
+             AND "toys"."lock_version" = $2  [["id", 8], ["lock_version", 11]]
+ (1.1ms)  COMMIT
+</code></pre>
+
+<p>We can see the affect of the lock on the <em>Bob</em> session. If you look at how long
+the <code>Toy Load</code> took, <code>198875.2ms</code>. All of that time is the application waiting
+on the <em>Alice</em> session.</p>
+
+<h3><strong>lock!</strong></h3>
+
+<p>An alternative to <code>with_lock</code> is <code>lock!</code>. This will lock the record&rsquo;s row for the
+duration of the transaction.</p>
+
+<pre><code>ActiveRecord::Base.transaction do
+  alice = Person.find_by(name: 'Alice')
+  toy = Toy.find_by(name: 'racecar')
+  toy.lock!
+  toy.person_id = alice.id
+  toy.save!
+end
+</code></pre>
+
+<h2>Conclusion</h2>
+
+<p>Optimistic and Pessimistic locking each have their own purpose with benefits and problems.</p>
+
+<p>Optimistic locking is fine to have on enabled on most user managed models. It can
+be used to keep two users from updating the same record at the same time or from
+outdated data. Provided that the user form has the <em>lock_version</em> passed as part
+of the posted data.</p>
+
+<p>Pessimistic locking provides a way to use the database layer to determine if someone
+is using that data. This can be easy for updating a single table record, but becomes
+most difficult the more records you try to lock. You can use pessimistic locking
+to make the users wait to update their shared data or to notify the users that a
+person is updating a record or set of records.</p>
+
+<p>I would be careful with pessimistic locking. This can lead to database deadlocks.</p>
+]]></content>
+  </entry>
+  
+</feed>

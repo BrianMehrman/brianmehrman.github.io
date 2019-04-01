@@ -1,0 +1,379 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Ruby Code Blocks - Brian Mehrman</title>
+  <meta name="author" content="Brian Mehrman">
+
+  
+  <meta name="description" content="Code Blocks Ruby code blocks are from the closure family Ruby blocks are found throughout ruby. They are a powerful feature that allow
+you to pass &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://brianmehrman.github.io/blog/2019/01/13/ruby-code-blocks/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="atom.xml" rel="alternate" title="Brian Mehrman" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Brian Mehrman</a></h1>
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Ruby Code Blocks</h1>
+    
+  </header>
+
+
+
+
+<span class="categories">
+  
+    
+    <span class="category">
+        ruby
+    </span>
+    
+  
+</span>
+
+
+<div class="entry-content"><h1>Code Blocks</h1>
+
+<p>Ruby code blocks are from the closure family</p>
+
+<p>Ruby blocks are found throughout ruby. They are a powerful feature that allow
+you to pass snippets of code to enumerable methods (e.g. each, select, detect)
+as well as custom methods useing the yield keyword.</p>
+
+<p>Blocks are nothing new, they use the computer science concept called closures.
+This concept was invented by Peter J. Landin in 1964. Closures were adopted by
+a version of a Lisp called Scheme in 1975.</p>
+
+<!--more-->
+
+
+<h2>What is a block</h2>
+
+<p>Blocks are a concept that allows programmers to extend their applications to have
+a domain specific language (DSL). A DSL is a form of metaprogramming that makes
+it easier to program and configure complex systems.</p>
+
+<p>If you have ever used a method on an Array to loop through elements in that Array
+you have used a block.</p>
+
+<pre><code class="ruby">["alex", "gina", "pam"].each do |inserted_name|
+  puts "Hello, #{inserted_name}"
+end
+</code></pre>
+
+<p>A block starts with <code>do</code> and terminates with <code>end</code>. A block can have a parameter
+defined between the pipes <code>|x|</code> at the begin of a block definition. When defining
+a block on a single line use braces <code>arr.each { |i| }</code>.</p>
+
+<p>This single line line block is often called an inline block.</p>
+
+<pre><code class="ruby">["alex", "gina", "pam"].each { |inserted_name| puts "Hello, #{inserted_name}" }
+</code></pre>
+
+<p>When writing a block that will need to be more than one line it <code>do</code> / <code>end</code> should
+be used. These are called multi-line blocks.</p>
+
+<h2>Methods</h2>
+
+<p>All ruby methods can be associated with a block. A block allows programmers to group
+statements together with a method call.</p>
+
+<pre><code class="ruby">def something
+  puts "do something"
+end
+</code></pre>
+
+<p>If a the method does not call <code>yield</code> the block will not be called. The method
+will ignore the block being passed.</p>
+
+<pre><code class="ruby">something do
+  puts "do something else"
+end
+</code></pre>
+
+<p>Here the method <code>something</code> is being passed a block. However as seen below shows
+the output of the <code>puts</code> statement in the method is called and the statement in
+the block is not called.</p>
+
+<pre><code>do something
+</code></pre>
+
+<p>To execute the block passed to method it will need to be yielded from within the
+method.</p>
+
+<h2>Yield</h2>
+
+<p>An associated block can be invoked within the method using the keyword <code>yield</code>.
+This allows the programmer to control the flow of the block&rsquo;s execution. Without
+calling <code>yield</code> the block is ignored, as seen above.</p>
+
+<pre><code class="ruby">def something_else
+  puts "Begin"
+  yield
+  puts "End"
+end
+</code></pre>
+
+<p>The contents of the block will be executed when the <code>yield</code> statement is called.
+Once the block is yielded the method is returned control of execution.</p>
+
+<pre><code class="ruby">something_else do
+  puts "yielded code"
+end
+</code></pre>
+
+<p>The method executing the block can run any code before or after the block is invoked.</p>
+
+<pre><code>Begin
+yielded code
+End
+</code></pre>
+
+<p>When <code>something_else</code> is called with a block the method prints out the string
+<code>Begin</code>. The block is then invoked, printing out <code>yielded code</code>. The method is then
+returned control printing out the final string <code>End</code>.</p>
+
+<h2>Passing Arguments</h2>
+
+<p>Yield blocks can be passed arguments within a method. These arguments can then
+be used within the blocks as a parameter.</p>
+
+<pre><code class="ruby">def run_three
+  [1,2,3].each do |i|
+    yield(i)
+  end
+end
+</code></pre>
+
+<p>The parameter will be defined between the pipes <code>|x|</code>. The arity of the parameters
+should match the number of arguments being passed into the yield statement.</p>
+
+<pre><code class="ruby">run_three do |i|
+  puts "and a #{i}"
+end
+</code></pre>
+
+<p>The output:</p>
+
+<pre><code>and a 1
+and a 2
+and a 3
+</code></pre>
+
+<p>Above the we can see that the method <code>run_three</code> is being envoked with a block that
+accepts an argument. Within the <code>run_three</code> method we have an array of 3 numbers
+<code>[1,2,3]</code>. The method iterates through the array and calls yield with each value in
+the array.</p>
+
+<h2>Blocks as Arguments</h2>
+
+<p>A block can be passed around as an argument to a method. This can be done by adding
+an argument to the method with an ampersand <code>&amp;block</code>.</p>
+
+<pre><code class="ruby">def pass_method(&amp;block)
+  block.call
+end
+</code></pre>
+
+<p>Invoking the method <code>call</code> on the block will execute the block. When the passed
+block is stored as a variable it is changed to a Proc.</p>
+
+<pre><code class="ruby">pass_method { puts "yielded code" }
+</code></pre>
+
+<p>The block can still have params passed to it, like a block that is yielded.</p>
+
+<pre><code class="ruby">def my_iterator(things, &amp;block)
+  things.each do |thing|
+    block.call(thing)
+  end
+end
+
+van = []
+
+my_iterator ['John', 'Paul', 'George', 'Ringo'] do |beatle|
+  van &lt;&lt; beatle
+end
+
+puts "#{van.join(', ')} are in the van"
+</code></pre>
+
+<p>A block is not execute at the time it is encountered. The current context is
+stored with the block for later use before entering the method. This mean local
+variables called in the block will have the same value a when the block was passed
+to the method call.</p>
+
+<h2>Conclusion</h2>
+
+<p>A block can be used to create some commonly used code that allows you to
+inject custom code where it is used. This comes in handy when you need to dry
+up your code but find that the code differs in a few key places.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+<span class="byline author vcard">Posted by <span class="fn">Brian Mehrman</span></span>
+
+      
+
+
+
+
+
+
+
+
+
+
+<time datetime="2019-01-13T20:26:31-06:00" pubdate data-updated="true"><span class='month'>Jan</span> <span class='day'>13</span> <span class='year'>2019</span></time>
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://brianmehrman.github.io/blog/2019/01/13/ruby-code-blocks/" data-via="brianmehrman" data-counturl="http://brianmehrman.github.io/blog/2019/01/13/ruby-code-blocks/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2018/06/23/database-record-locking/" title="Previous Post: Postgresql Record Locking">&laquo; Postgresql Record Locking</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <form action="https://www.google.com/search" method="get">
+      <fieldset role="search">
+        <input type="hidden" name="q" value="site:brianmehrman.github.io" />
+        <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+      </fieldset>
+    </form>
+  
+  <a href="/blog/archives">Blog Archives</a>
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2019/01/13/ruby-code-blocks/">Ruby Code Blocks</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/06/23/database-record-locking/">Postgresql Record Locking</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/05/29/optimistic-vs-pessimistic-locking/">Optimistic vs Pessimistic Locking</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/02/06/git-tips/">Git Tips</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/04/26/class-eval-vs-define-method/">class_eval vs define_method</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - Brian Mehrman -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="/javascripts/main.js"></script>
+
+
+</body>
+</html>

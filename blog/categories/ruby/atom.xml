@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Brian Mehrman]]></title>
   <link href="http://brianmehrman.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://brianmehrman.github.io/"/>
-  <updated>2018-08-17T14:07:09-05:00</updated>
+  <updated>2019-03-31T19:53:15-05:00</updated>
   <id>http://brianmehrman.github.io/</id>
   <author>
     <name><![CDATA[Brian Mehrman]]></name>
@@ -12,6 +12,190 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby Code Blocks]]></title>
+    <link href="http://brianmehrman.github.io/blog/2019/01/13/ruby-code-blocks/"/>
+    <updated>2019-01-13T20:26:31-06:00</updated>
+    <id>http://brianmehrman.github.io/blog/2019/01/13/ruby-code-blocks</id>
+    <content type="html"><![CDATA[<h1>Code Blocks</h1>
+
+<p>Ruby code blocks are from the closure family</p>
+
+<p>Ruby blocks are found throughout ruby. They are a powerful feature that allow
+you to pass snippets of code to enumerable methods (e.g. each, select, detect)
+as well as custom methods useing the yield keyword.</p>
+
+<p>Blocks are nothing new, they use the computer science concept called closures.
+This concept was invented by Peter J. Landin in 1964. Closures were adopted by
+a version of a Lisp called Scheme in 1975.</p>
+
+<!--more-->
+
+
+<h2>What is a block</h2>
+
+<p>Blocks are a concept that allows programmers to extend their applications to have
+a domain specific language (DSL). A DSL is a form of metaprogramming that makes
+it easier to program and configure complex systems.</p>
+
+<p>If you have ever used a method on an Array to loop through elements in that Array
+you have used a block.</p>
+
+<pre><code class="ruby">["alex", "gina", "pam"].each do |inserted_name|
+  puts "Hello, #{inserted_name}"
+end
+</code></pre>
+
+<p>A block starts with <code>do</code> and terminates with <code>end</code>. A block can have a parameter
+defined between the pipes <code>|x|</code> at the begin of a block definition. When defining
+a block on a single line use braces <code>arr.each { |i| }</code>.</p>
+
+<p>This single line line block is often called an inline block.</p>
+
+<pre><code class="ruby">["alex", "gina", "pam"].each { |inserted_name| puts "Hello, #{inserted_name}" }
+</code></pre>
+
+<p>When writing a block that will need to be more than one line it <code>do</code> / <code>end</code> should
+be used. These are called multi-line blocks.</p>
+
+<h2>Methods</h2>
+
+<p>All ruby methods can be associated with a block. A block allows programmers to group
+statements together with a method call.</p>
+
+<pre><code class="ruby">def something
+  puts "do something"
+end
+</code></pre>
+
+<p>If a the method does not call <code>yield</code> the block will not be called. The method
+will ignore the block being passed.</p>
+
+<pre><code class="ruby">something do
+  puts "do something else"
+end
+</code></pre>
+
+<p>Here the method <code>something</code> is being passed a block. However as seen below shows
+the output of the <code>puts</code> statement in the method is called and the statement in
+the block is not called.</p>
+
+<pre><code>do something
+</code></pre>
+
+<p>To execute the block passed to method it will need to be yielded from within the
+method.</p>
+
+<h2>Yield</h2>
+
+<p>An associated block can be invoked within the method using the keyword <code>yield</code>.
+This allows the programmer to control the flow of the block&rsquo;s execution. Without
+calling <code>yield</code> the block is ignored, as seen above.</p>
+
+<pre><code class="ruby">def something_else
+  puts "Begin"
+  yield
+  puts "End"
+end
+</code></pre>
+
+<p>The contents of the block will be executed when the <code>yield</code> statement is called.
+Once the block is yielded the method is returned control of execution.</p>
+
+<pre><code class="ruby">something_else do
+  puts "yielded code"
+end
+</code></pre>
+
+<p>The method executing the block can run any code before or after the block is invoked.</p>
+
+<pre><code>Begin
+yielded code
+End
+</code></pre>
+
+<p>When <code>something_else</code> is called with a block the method prints out the string
+<code>Begin</code>. The block is then invoked, printing out <code>yielded code</code>. The method is then
+returned control printing out the final string <code>End</code>.</p>
+
+<h2>Passing Arguments</h2>
+
+<p>Yield blocks can be passed arguments within a method. These arguments can then
+be used within the blocks as a parameter.</p>
+
+<pre><code class="ruby">def run_three
+  [1,2,3].each do |i|
+    yield(i)
+  end
+end
+</code></pre>
+
+<p>The parameter will be defined between the pipes <code>|x|</code>. The arity of the parameters
+should match the number of arguments being passed into the yield statement.</p>
+
+<pre><code class="ruby">run_three do |i|
+  puts "and a #{i}"
+end
+</code></pre>
+
+<p>The output:</p>
+
+<pre><code>and a 1
+and a 2
+and a 3
+</code></pre>
+
+<p>Above the we can see that the method <code>run_three</code> is being envoked with a block that
+accepts an argument. Within the <code>run_three</code> method we have an array of 3 numbers
+<code>[1,2,3]</code>. The method iterates through the array and calls yield with each value in
+the array.</p>
+
+<h2>Blocks as Arguments</h2>
+
+<p>A block can be passed around as an argument to a method. This can be done by adding
+an argument to the method with an ampersand <code>&amp;block</code>.</p>
+
+<pre><code class="ruby">def pass_method(&amp;block)
+  block.call
+end
+</code></pre>
+
+<p>Invoking the method <code>call</code> on the block will execute the block. When the passed
+block is stored as a variable it is changed to a Proc.</p>
+
+<pre><code class="ruby">pass_method { puts "yielded code" }
+</code></pre>
+
+<p>The block can still have params passed to it, like a block that is yielded.</p>
+
+<pre><code class="ruby">def my_iterator(things, &amp;block)
+  things.each do |thing|
+    block.call(thing)
+  end
+end
+
+van = []
+
+my_iterator ['John', 'Paul', 'George', 'Ringo'] do |beatle|
+  van &lt;&lt; beatle
+end
+
+puts "#{van.join(', ')} are in the van"
+</code></pre>
+
+<p>A block is not execute at the time it is encountered. The current context is
+stored with the block for later use before entering the method. This mean local
+variables called in the block will have the same value a when the block was passed
+to the method call.</p>
+
+<h2>Conclusion</h2>
+
+<p>A block can be used to create some commonly used code that allows you to
+inject custom code where it is used. This comes in handy when you need to dry
+up your code but find that the code differs in a few key places.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Postgresql Record Locking]]></title>

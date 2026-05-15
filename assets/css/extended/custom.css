@@ -1,0 +1,601 @@
+/* ============================================================
+   Design System — Brian Mehrman
+   ============================================================
+   Tokens:
+     Background:       #0d1117
+     Surface:          #161b22
+     Border:           #21262d
+     Primary text:     #e6edf3
+     Secondary text:   #8b949e
+     Accent:           #a371f7 (purple)
+     Code green:       #3fb950
+     Body font:        Inter, system-ui
+     Code font:        JetBrains Mono, monospace
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ── Base overrides ──────────────────────────────────────── */
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --border: #21262d;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --accent: #a371f7;
+  --code-green: #3fb950;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+body {
+  background-color: var(--bg) !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-body) !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── PaperMod variable overrides (dark mode) ─────────────── */
+.dark,
+body {
+  --theme: var(--bg);
+  --entry: var(--surface);
+  --primary: var(--text-primary);
+  --secondary: var(--text-secondary);
+  --tertiary: var(--border);
+  --content: var(--text-primary);
+  --hljs-bg: var(--surface);
+  --code-bg: var(--surface);
+  --border-color: var(--border);
+}
+
+/* ── Header / Nav ────────────────────────────────────────── */
+.header {
+  background: var(--bg) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.logo a,
+.logo span {
+  font-family: var(--font-mono) !important;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-primary) !important;
+}
+
+nav a {
+  color: var(--text-secondary) !important;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+nav a:hover,
+nav a.active {
+  color: var(--accent) !important;
+}
+
+/* ── Links ───────────────────────────────────────────────── */
+a {
+  color: var(--accent) !important;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+a:hover {
+  opacity: 0.85;
+  text-decoration: underline;
+}
+
+/* Post titles and nav links shouldn't be accent-colored */
+.post-title a,
+.entry-header a,
+h1 a, h2 a, h3 a {
+  color: var(--text-primary) !important;
+}
+
+.post-title a:hover,
+.entry-header a:hover {
+  color: var(--accent) !important;
+  text-decoration: none;
+}
+
+/* ── Typography ──────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary) !important;
+  font-family: var(--font-body) !important;
+  font-weight: 700;
+}
+
+p, li, blockquote {
+  color: var(--text-primary) !important;
+  line-height: 1.75;
+}
+
+.post-meta,
+.post-meta span,
+time,
+.reading-time {
+  color: var(--text-secondary) !important;
+  font-size: 0.8125rem;
+}
+
+/* ── Section labels (used in homepage + post lists) ─────── */
+.section-label {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ── Post list entries ───────────────────────────────────── */
+.post-entry {
+  background: transparent !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.post-entry:hover {
+  border-color: var(--accent) !important;
+  background: var(--surface) !important;
+}
+
+.entry-header h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+}
+
+.entry-content p {
+  font-size: 0.9rem;
+  color: var(--text-secondary) !important;
+  margin: 0;
+}
+
+/* ── Code blocks ─────────────────────────────────────────── */
+code,
+pre,
+kbd {
+  font-family: var(--font-mono) !important;
+}
+
+pre {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  overflow-x: auto;
+}
+
+code:not(pre code) {
+  background: var(--surface) !important;
+  color: var(--accent) !important;
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-size: 0.875em;
+  border: 1px solid var(--border);
+}
+
+/* ── Tags ────────────────────────────────────────────────── */
+.post-tags a,
+.terms-tags a {
+  background: var(--surface) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 4px;
+  padding: 0.15em 0.6em;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.post-tags a:hover,
+.terms-tags a:hover {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  text-decoration: none !important;
+}
+
+/* ── Dividers ────────────────────────────────────────────── */
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.footer {
+  color: var(--text-secondary) !important;
+  border-top: 1px solid var(--border);
+  font-size: 0.8125rem;
+}
+
+.footer a {
+  color: var(--text-secondary) !important;
+}
+
+.footer a:hover {
+  color: var(--accent) !important;
+  text-decoration: none !important;
+}
+
+/* ── Social icons ────────────────────────────────────────── */
+.social-icons a {
+  color: var(--text-secondary) !important;
+  transition: color 0.15s ease;
+}
+
+.social-icons a:hover {
+  color: var(--accent) !important;
+}
+
+/* ── Search ──────────────────────────────────────────────── */
+#searchbox input {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-primary) !important;
+  border-radius: 6px;
+  font-family: var(--font-body);
+}
+
+#searchbox input:focus {
+  border-color: var(--accent) !important;
+  outline: none;
+}
+
+/* ── Breadcrumbs / prev-next nav ─────────────────────────── */
+.paginav {
+  border-top: 1px solid var(--border) !important;
+}
+
+.paginav a {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px;
+  color: var(--text-primary) !important;
+  transition: border-color 0.15s ease;
+}
+
+.paginav a:hover {
+  border-color: var(--accent) !important;
+  text-decoration: none !important;
+}
+
+/* ── Table ───────────────────────────────────────────────── */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+th {
+  color: var(--text-secondary) !important;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  color: var(--text-primary) !important;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+/* ── Blockquote ──────────────────────────────────────────── */
+blockquote {
+  border-left: 3px solid var(--accent) !important;
+  background: var(--surface);
+  padding: 0.75rem 1rem;
+  border-radius: 0 4px 4px 0;
+  margin: 1.5rem 0;
+}
+
+blockquote p {
+  color: var(--text-secondary) !important;
+  font-style: italic;
+}
+
+/* ── Portfolio cards ─────────────────────────────────────── */
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.portfolio-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.portfolio-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.portfolio-card h3 {
+  font-size: 1rem;
+  margin: 0 0 0.4rem;
+  font-weight: 600;
+}
+
+.portfolio-card .impact {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin: 0 0 0.75rem;
+  line-height: 1.5;
+}
+
+.portfolio-card .tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.portfolio-card .tech-tag {
+  background: var(--bg);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.1em 0.5em;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+.portfolio-card .card-link {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--accent) !important;
+  font-family: var(--font-mono);
+}
+
+/* ── Resume page ─────────────────────────────────────────── */
+.resume-header {
+  margin-bottom: 2rem;
+}
+
+.resume-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--accent);
+  color: #fff !important;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none !important;
+  transition: opacity 0.15s ease;
+  margin-top: 0.75rem;
+}
+
+.resume-download:hover {
+  opacity: 0.9;
+  text-decoration: none !important;
+}
+
+/* ── Accent divider decoration ───────────────────────────── */
+.accent-divider {
+  height: 2px;
+  width: 40px;
+  background: var(--accent);
+  border-radius: 1px;
+  margin: 0.75rem 0 1.25rem;
+}
+
+/* ── Homepage ────────────────────────────────────────────── */
+.home-hero {
+  text-align: center;
+  padding: 4rem 1rem 3rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 3rem;
+}
+
+.hero-inner {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.hero-name {
+  font-family: var(--font-mono) !important;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--accent) !important;
+  margin: 0 0 0.5rem;
+}
+
+.hero-tagline {
+  color: var(--text-secondary) !important;
+  font-size: 1rem;
+  margin: 0 0 1rem;
+  letter-spacing: 0.02em;
+}
+
+.hero-bio {
+  color: var(--text-secondary) !important;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  margin: 0 0 1.5rem;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero-nav a {
+  font-family: var(--font-mono) !important;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary) !important;
+  text-decoration: none !important;
+  transition: color 0.15s ease;
+}
+
+.hero-nav a:hover {
+  color: var(--accent) !important;
+}
+
+.hero-nav-sep {
+  color: var(--border);
+}
+
+.hero-social {
+  justify-content: center;
+  margin-top: 0.25rem;
+}
+
+/* ── Home sections ───────────────────────────────────────── */
+.home-section {
+  margin-bottom: 3rem;
+}
+
+.home-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+.section-all-link {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary) !important;
+  text-decoration: none !important;
+  transition: color 0.15s ease;
+}
+
+.section-all-link:hover {
+  color: var(--accent) !important;
+}
+
+/* ── Writing list (homepage) ─────────────────────────────── */
+.writing-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.writing-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.writing-item:hover {
+  background: var(--surface);
+}
+
+.writing-title {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary) !important;
+  text-decoration: none !important;
+  flex: 1;
+  min-width: 0;
+}
+
+.writing-title:hover {
+  color: var(--accent) !important;
+}
+
+.writing-meta {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary) !important;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.meta-sep {
+  margin: 0 0.25rem;
+}
+
+/* ── Work cards (homepage) ───────────────────────────────── */
+.work-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.75rem;
+}
+
+.work-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  text-decoration: none !important;
+  display: block;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.work-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.work-card-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.work-card-impact {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 0.6rem;
+}
+
+.work-card-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.tech-pill {
+  background: var(--bg);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.1em 0.45em;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+}

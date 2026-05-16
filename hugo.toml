@@ -1,4 +1,4 @@
-baseURL = 'https://www.brianmehrman.com/'
+baseURL = 'https://brianmehrman.com/'
 locale = 'en-us'
 title = 'Brian Mehrman'
 theme = 'PaperMod'

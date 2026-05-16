@@ -6,14 +6,14 @@ summary: "Resume — Brian Mehrman, Principal Software Engineer"
 ---
 
 <div class="resume-header">
-<p>217-979-2211 · <a href="mailto:bcmehrman@gmail.com">bcmehrman@gmail.com</a> · <a href="https://github.com/brianmehrman">GitHub</a> · <a href="https://linkedin.com/in/brianmehrman-208a1a1a">LinkedIn</a> · Greater Chicago Area</p>
+<p><a href="mailto:bcmehrman@gmail.com">bcmehrman@gmail.com</a> · <a href="https://github.com/brianmehrman">GitHub</a> · <a href="https://linkedin.com/in/brianmehrman-208a1a1a">LinkedIn</a> · Greater Chicago Area</p>
 </div>
 
 ---
 
 ## Summary
 
-Principal Software Engineer focused on platform infrastructure. Designed and shipped an on-demand Kubernetes test environment system that cut setup from days-to-weeks down to 3-4 hours and scaled to 50-60 concurrent environments for a 30-engineer organization, replacing shared long-lived integration environments. Authored the company-wide CI/CD pipeline standard adopted across engineering. 15+ years across platform engineering, backend architecture, and developer tooling — with active practice in AI/LLM agent workflows.
+Principal Software Engineer focused on platform infrastructure. I design and ship the systems that let engineering teams move fast. Most recently, I built an on-demand Kubernetes test environment system that cut setup from days or weeks down to 3-4 hours and scaled to 50-60 concurrent environments for a 30-engineer organization, replacing shared long-lived integration environments. I also authored the company-wide CI/CD pipeline standard adopted across engineering. 15+ years across platform engineering, backend architecture, and developer tooling — with active practice in AI/LLM agent workflows.
 
 ---
 
@@ -27,10 +27,10 @@ Principal Software Engineer focused on platform infrastructure. Designed and shi
 
 Architect and own platform infrastructure for the engineering organization (~30 engineers across product and platform teams). Serve as Developer Liaison coordinating technical dependencies between product and platform groups.
 
-- Designed and led on-demand full-stack integration environment system on AWS EKS — reduced test environment setup from days-to-weeks to 3-4 hours; scaled to 50-60 concurrent environments, replacing shared long-lived integration environments
+- Designed and led an on-demand full-stack integration environment system on AWS EKS — reduced test environment setup from days or weeks to 3-4 hours; scaled to 50-60 concurrent environments, replacing shared long-lived integration environments
 - Authored the company-wide CI/CD pipeline standard: 14-stage pipeline, Docker multi-stage builds, semantic versioning, three deployment modes (locked standard, configurable, fully custom)
 - Built long-lived Sales demo environment on Kubernetes with daily synthetic delivery data generation, weekly automated rebuild from snapshot, and on-demand org/user provisioning via pipeline
-- Managed full transition from legacy environment pipeline to new E2E pipeline suite — legacy pipeline retired Jan 2025
+- Managed the full transition from the legacy environment pipeline to the new E2E pipeline suite — legacy pipeline retired Jan 2025
 - Designed namespace-per-service Kubernetes architecture for multi-application environments
 - Led two company-wide bootcamp sessions on Kubernetes environment usage (Apr 2023, Dec 2024)
 
@@ -62,7 +62,7 @@ Architect and own platform infrastructure for the engineering organization (~30 
 
 **Lead Software Engineer** | May 2019–Oct 2020
 
-- Led three-milestone campaign performance dashboard initiative — replaced fragmented tables with actionable charts (pacing %, KPI %, agency margin %); reduced time to identify at-risk campaigns
+- Led a three-milestone campaign performance dashboard initiative — replaced fragmented tables with actionable charts (pacing %, KPI %, agency margin %); reduced time to identify at-risk campaigns
 - Designed real-time campaign collaboration system with WebSocket vs. polling evaluation
 - Led product analytics GDPR compliance integration
 - Owned engineering interview process and take-home exercises for QA and frontend roles
@@ -81,7 +81,7 @@ Architect and own platform infrastructure for the engineering organization (~30 
 **Software Engineer** | Jul 2015–Aug 2017
 
 - Refactored monolithic Campaign Overview endpoint into four parallel view-specific endpoints, enabling progressive page rendering
-- Built data generation utility for manual testing; built manual upload feature ingesting spreadsheet data into the interactive dashboard
+- Built a data generation utility for manual testing and a manual upload feature that ingests spreadsheet data into the interactive dashboard
 
 *Technologies: AWS, Ruby on Rails, Redis, PostgreSQL, React, Node.js, Docker*
 

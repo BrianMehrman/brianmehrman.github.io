@@ -1,0 +1,63 @@
+{{- define "main" }}
+<article class="post-single portfolio-index">
+  <header class="post-header">
+    <h1 class="post-title">Portfolio</h1>
+    <p class="post-description">Selected work — open source projects, platform engineering highlights, and case studies.</p>
+  </header>
+
+  {{- $pages := .Pages }}
+
+  {{- $oss := where $pages ".Params.tier" "open-source" }}
+  {{- $work := where $pages ".Params.tier" "work" }}
+
+  {{- if $oss }}
+  <section class="portfolio-section">
+    <div class="home-section-header">
+      <span class="section-label">Open Source</span>
+    </div>
+    <div class="portfolio-grid">
+      {{- range $oss }}
+      <a href="{{ .Permalink }}" class="portfolio-card">
+        <h3>{{ .Title }}</h3>
+        <p class="impact">{{ .Params.impact }}</p>
+        {{- if .Params.tech }}
+        <div class="tech-tags">
+          {{- range .Params.tech }}
+          <span class="tech-tag">{{ . }}</span>
+          {{- end }}
+        </div>
+        {{- end }}
+        {{- if .Params.link }}
+        <span class="card-link">View on GitHub →</span>
+        {{- end }}
+      </a>
+      {{- end }}
+    </div>
+  </section>
+  {{- end }}
+
+  {{- if $work }}
+  <section class="portfolio-section" style="margin-top:2.5rem;">
+    <div class="home-section-header">
+      <span class="section-label">Work Highlights</span>
+    </div>
+    <div class="portfolio-grid">
+      {{- range $work }}
+      <a href="{{ .Permalink }}" class="portfolio-card">
+        <h3>{{ .Title }}</h3>
+        <p class="impact">{{ .Params.impact }}</p>
+        {{- if .Params.tech }}
+        <div class="tech-tags">
+          {{- range .Params.tech }}
+          <span class="tech-tag">{{ . }}</span>
+          {{- end }}
+        </div>
+        {{- end }}
+      </a>
+      {{- end }}
+    </div>
+  </section>
+  {{- end }}
+
+</article>
+{{- end }}

@@ -1,0 +1,82 @@
+{{- define "main" }}
+
+<!-- ── Hero ─────────────────────────────────────────── -->
+<section class="home-hero">
+  <div class="hero-inner">
+    <h1 class="hero-name">BRIAN MEHRMAN</h1>
+    <p class="hero-tagline">Platform Engineer · Architect · Mentor</p>
+    <p class="hero-bio">
+      I build the infrastructure that helps engineering teams ship. I write about what I learn along the way.
+    </p>
+    <nav class="hero-nav">
+      <a href="/blog/">Writing</a>
+      <span class="hero-nav-sep">·</span>
+      <a href="/portfolio/">Portfolio</a>
+      <span class="hero-nav-sep">·</span>
+      <a href="/resume/">Resume</a>
+    </nav>
+    <div class="social-icons hero-social">
+      {{- range .Site.Params.socialIcons }}
+      <a href="{{ .url | safeURL }}" target="_blank" rel="noopener noreferrer" title="{{ .name }}">
+        {{- partialCached "svg" . .name }}
+      </a>
+      {{- end }}
+    </div>
+  </div>
+</section>
+
+<!-- ── Recent Writing ────────────────────────────────── -->
+{{- $posts := where .Site.RegularPages "Section" "blog" }}
+{{- $posts = $posts | first 3 }}
+{{- if $posts }}
+<section class="home-section">
+  <div class="home-section-header">
+    <span class="section-label">Recent Writing</span>
+    <a href="/blog/" class="section-all-link">All posts →</a>
+  </div>
+  <div class="writing-list">
+    {{- range $posts }}
+    <article class="writing-item">
+      <a href="{{ .Permalink }}" class="writing-title">{{ .Title }}</a>
+      <div class="writing-meta">
+        <time>{{ .Date.Format "Jan 2, 2006" }}</time>
+        {{- if .ReadingTime }}
+        <span class="meta-sep">·</span>
+        <span>{{ .ReadingTime }} min read</span>
+        {{- end }}
+      </div>
+    </article>
+    {{- end }}
+  </div>
+</section>
+{{- end }}
+
+<!-- ── Selected Work ─────────────────────────────────── -->
+{{- $projects := where .Site.RegularPages "Section" "portfolio" }}
+{{- $featured := where $projects ".Params.featured" true }}
+{{- if not $featured }}{{- $featured = $projects | first 3 }}{{- end }}
+{{- if $featured }}
+<section class="home-section">
+  <div class="home-section-header">
+    <span class="section-label">Selected Work</span>
+    <a href="/portfolio/" class="section-all-link">All projects →</a>
+  </div>
+  <div class="work-cards">
+    {{- range $featured }}
+    <a href="{{ .Permalink }}" class="work-card">
+      <div class="work-card-title">{{ .Title }}</div>
+      <div class="work-card-impact">{{ .Params.impact }}</div>
+      {{- if .Params.tech }}
+      <div class="work-card-tech">
+        {{- range .Params.tech }}
+        <span class="tech-pill">{{ . }}</span>
+        {{- end }}
+      </div>
+      {{- end }}
+    </a>
+    {{- end }}
+  </div>
+</section>
+{{- end }}
+
+{{- end }}

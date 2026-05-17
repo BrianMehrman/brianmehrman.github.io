@@ -163,3 +163,111 @@ the `postgres-rails` service and click "Find Traces." You'll see the HTTP POST
 trace with three child spans: the ActiveRecord insert, the SolidQueue job enqueue,
 and — once the job runs — the `llm.chat` span showing exactly how long the LLM
 took to respond.
+
+## Patterns worth monitoring
+
+Once you have traces and metrics flowing, here are three things to actually
+watch and what they tell you.
+
+**LLM p95 latency** — In Jaeger, filter traces by operation name `llm.chat`
+and look at the latency distribution. The p95 (95th percentile) is the number
+to care about: it tells you what a bad-but-not-worst-case user experience looks
+like. Local LLMs can vary wildly — a cold Ollama model might take 30 seconds;
+a warm one might take 2. Set your baseline before you optimize.
+
+**Job queue backlog** — In Prometheus, query:
+```
+rate(http_server_requests_total{path="/chats/*/messages"}[5m])
+```
+Compare the rate of incoming messages against the rate of completed jobs. If
+messages are arriving faster than `LlmResponseJob` is finishing, your queue
+is growing. That's when you add workers.
+
+**`LlmResponseJob` error rate** — In Loki, query:
+```
+{app="postgres-rails"} |= "LlmResponseJob" |= "error"
+```
+This surfaces job failures in your log stream. Pair it with the `status="error"`
+label on the `llm_request_duration_seconds` Prometheus metric for an alert:
+when errors exceed 5% of LLM requests, something is wrong with the LLM provider.
+
+## Adding Fluent Bit
+
+The setup above gets traces to Jaeger and metrics to Prometheus. For logs, the
+cleanest approach is to let the app write to stdout (which Rails does by default)
+and have a log agent collect and ship them. Fluent Bit is the right tool for this.
+
+Instead of adding a Loki library to your app, Fluent Bit reads directly from
+Docker's container log files, parses them, and forwards structured records to Loki.
+Your app doesn't know Loki exists. That's the production pattern.
+
+Add Fluent Bit to `docker-compose.observability.yml`:
+
+```yaml
+  fluent-bit:
+    image: fluent/fluent-bit:3.2
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./config/observability/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+      - ./config/observability/parsers.conf:/fluent-bit/etc/parsers.conf:ro
+    depends_on:
+      - loki
+```
+
+`config/observability/fluent-bit.conf`:
+
+```ini
+[SERVICE]
+    Flush         1
+    Parsers_File  /fluent-bit/etc/parsers.conf
+
+[INPUT]
+    Name              tail
+    Path              /var/lib/docker/containers/*/*-json.log
+    Parser            docker
+    Tag               docker.*
+    Refresh_Interval  5
+
+[FILTER]
+    Name    record_modifier
+    Match   docker.*
+    Record  app postgres-rails
+
+[OUTPUT]
+    Name    loki
+    Match   docker.*
+    Host    loki
+    Port    3100
+    Labels  job=fluent-bit,app=postgres-rails
+```
+
+Restart the stack: `docker compose -f docker-compose.observability.yml up -d`
+
+In Grafana, go to Explore → Loki and run `{app="postgres-rails"}`. Instead of
+raw text, you get structured JSON records with timestamp, container name, and
+log level as separate fields — which means you can filter with LogQL:
+
+```logql
+{app="postgres-rails"} | json | level="ERROR"
+```
+
+That's the difference between searching logs and querying them.
+
+## What's next
+
+You now have a full local observability loop: traces in Jaeger, metrics in
+Prometheus, logs in Loki, and everything queryable in Grafana. A few directions
+to take it further:
+
+- **Grafana dashboards** — pin the three queries above to a dashboard so you see
+  them at a glance instead of running them manually in Explore.
+- **Alerting** — use Grafana's alert rules to get a notification when LLM error
+  rate crosses a threshold.
+- **Extend to other services** — the same OTEL initializer pattern works for any
+  Ruby process. Add it to your workers, CLIs, or a second service and traces
+  will automatically connect across service boundaries.
+
+The stack you built here is the same one you'd run in production — scaled up,
+but structurally identical. That's the point: local observability shouldn't be
+a toy. It should be the real thing.

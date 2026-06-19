@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  body { margin: 0; background: white; }
+  svg text { font-family: 'Segoe UI', system-ui, sans-serif; }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 760 360" width="760" height="360" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#555"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#7c3aed"/>
+    </marker>
+    <marker id="arr-green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#2a8a4a"/>
+    </marker>
+    <marker id="arr-pink" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#c0366a"/>
+    </marker>
+    <filter id="rough" x="-2%" y="-2%" width="104%" height="104%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.0" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+
+  <!-- Rails Pod -->
+  <rect x="10" y="90" width="130" height="80" rx="5" ry="5"
+        fill="#e3f0ff" stroke="#3b6fd4" stroke-width="2" filter="url(#rough)"/>
+  <text x="75" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#1a3a7a">Rails Pod</text>
+  <text x="75" y="135" text-anchor="middle" font-size="10" fill="#3b6fd4">writes to stdout</text>
+  <text x="75" y="151" text-anchor="middle" font-size="10" fill="#3b6fd4">(Rails.logger)</text>
+
+  <line x1="141" y1="130" x2="188" y2="130" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="164" y="122" text-anchor="middle" font-size="9" fill="#777">stdout</text>
+
+  <!-- /var/log/containers -->
+  <rect x="190" y="100" width="130" height="60" rx="5" ry="5"
+        fill="#fafafa" stroke="#999" stroke-width="1.5" filter="url(#rough)" stroke-dasharray="5,3"/>
+  <text x="255" y="126" text-anchor="middle" font-size="11" font-weight="600" fill="#555">/var/log/</text>
+  <text x="255" y="142" text-anchor="middle" font-size="11" font-weight="600" fill="#555">containers/</text>
+
+  <line x1="321" y1="130" x2="368" y2="130" stroke="#7c3aed" stroke-width="2" marker-end="url(#arr-purple)"/>
+  <text x="344" y="122" text-anchor="middle" font-size="9" fill="#7c3aed">tail</text>
+
+  <!-- Fluent Bit -->
+  <rect x="370" y="50" width="170" height="165" rx="6" ry="6"
+        fill="#f3e8ff" stroke="#7c3aed" stroke-width="2" filter="url(#rough)"/>
+  <text x="455" y="74" text-anchor="middle" font-size="13" font-weight="700" fill="#4c1d95">Fluent Bit</text>
+  <text x="455" y="90" text-anchor="middle" font-size="9" fill="#7c3aed">DaemonSet (one per node)</text>
+
+  <rect x="388" y="100" width="134" height="24" rx="3" fill="#e8d8ff" stroke="#9c5aff" stroke-width="1"/>
+  <text x="455" y="116" text-anchor="middle" font-size="10" fill="#4c1d95">INPUT: tail</text>
+  <line x1="455" y1="124" x2="455" y2="134" stroke="#9c5aff" stroke-width="1.5" marker-end="url(#arr-purple)"/>
+  <rect x="388" y="134" width="134" height="24" rx="3" fill="#e8d8ff" stroke="#9c5aff" stroke-width="1"/>
+  <text x="455" y="150" text-anchor="middle" font-size="10" fill="#4c1d95">FILTER: kubernetes</text>
+  <line x1="455" y1="158" x2="455" y2="168" stroke="#9c5aff" stroke-width="1.5" marker-end="url(#arr-purple)"/>
+  <rect x="388" y="168" width="134" height="24" rx="3" fill="#e8d8ff" stroke="#9c5aff" stroke-width="1"/>
+  <text x="455" y="184" text-anchor="middle" font-size="10" fill="#4c1d95">OUTPUT: loki</text>
+
+  <line x1="541" y1="132" x2="588" y2="132" stroke="#2a8a4a" stroke-width="2" marker-end="url(#arr-green)"/>
+  <text x="564" y="124" text-anchor="middle" font-size="9" fill="#2a8a4a">forward</text>
+
+  <!-- Loki -->
+  <rect x="590" y="92" width="110" height="80" rx="5" ry="5"
+        fill="#e8fdf0" stroke="#2a8a4a" stroke-width="2" filter="url(#rough)"/>
+  <text x="645" y="124" text-anchor="middle" font-size="13" font-weight="600" fill="#1a5c32">Loki</text>
+  <text x="645" y="142" text-anchor="middle" font-size="10" fill="#2a8a4a">log store</text>
+  <text x="645" y="158" text-anchor="middle" font-size="10" fill="#2a8a4a">:3100</text>
+
+  <line x1="645" y1="173" x2="645" y2="238" stroke="#c0366a" stroke-width="2"
+        marker-end="url(#arr-pink)" stroke-dasharray="4,3"/>
+  <text x="658" y="210" font-size="9" fill="#c0366a">query</text>
+
+  <!-- Grafana -->
+  <rect x="580" y="240" width="140" height="60" rx="5" ry="5"
+        fill="#fce8f0" stroke="#c0366a" stroke-width="2" filter="url(#rough)"/>
+  <text x="650" y="267" text-anchor="middle" font-size="13" font-weight="700" fill="#8b1a46">Grafana</text>
+  <text x="650" y="284" text-anchor="middle" font-size="10" fill="#c0366a">LogQL queries · :3001</text>
+
+  <!-- Callout -->
+  <rect x="10" y="220" width="200" height="60" rx="4"
+        fill="#fffde7" stroke="#cca800" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="110" y="240" text-anchor="middle" font-size="10" font-weight="600" fill="#7a6000">Your app stays clean</text>
+  <text x="110" y="256" text-anchor="middle" font-size="9" fill="#9a7a00">No Loki SDK. No log shipper</text>
+  <text x="110" y="270" text-anchor="middle" font-size="9" fill="#9a7a00">in the app. Just stdout.</text>
+</svg>
+</body>
+</html>

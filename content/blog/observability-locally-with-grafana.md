@@ -33,6 +33,9 @@ By the end of this post, you'll have:
 - Logs collected by Fluent Bit and queryable in Loki
 - All of it visible in a single Grafana dashboard
 
+![The async request flow showing Browser, MessagesController, SolidQueue, LlmResponseJob, LLM API, and Turbo Frame update with the OTEL trace boundary wrapping only the HTTP request through the SolidQueue enqueue](/images/observability/request-flow.png)
+*The async request flow. The OTEL trace covers the HTTP request through the SolidQueue enqueue. The job execution and LLM call run outside the current trace boundary.*
+
 The companion code is at [BrianMehrman/rails-llm-demo](https://github.com/BrianMehrman/rails-llm-demo).
 
 ## The stack
@@ -50,6 +53,9 @@ Five tools, each with one job:
 - **Fluent Bit** is the log collector. It runs as a DaemonSet, reads container
   logs directly from the node, and ships them to Loki — your app never touches
   a logging SDK.
+
+![The five observability services — Jaeger, Prometheus, Loki, Fluent Bit, and Grafana — and the arrows showing how they connect to the Rails app](/images/observability/stack-architecture.png)
+*The five observability services and how they connect to the Rails app. Traces push to Jaeger; Prometheus scrapes metrics; logs flow via Fluent Bit to Loki. Grafana queries all three.*
 
 ## Spinning up the stack
 
@@ -171,6 +177,9 @@ bin/dev
 automatically `kubectl port-forward`s the Jaeger collector to `localhost:4318`,
 so traces flow without any manual plumbing.
 
+![Jaeger-style waterfall showing the POST request as root span with three child spans: two ActiveRecord inserts and a SolidQueue enqueue. A dashed line marks the trace boundary below which LlmResponseJob is greyed out as not yet traced.](/images/observability/trace-spans.png)
+*A single OTEL trace for one chat message. The three spans inside the boundary show the controller, two DB inserts, and the SolidQueue enqueue. The job and LLM call would appear in a future trace once SolidQueue propagates context.*
+
 Send a chat message, then open the Jaeger UI at `http://localhost:16686`. Select
 the `rails-llm-demo` service and click "Find Traces." You'll see the HTTP POST
 trace with three child spans: the ActiveRecord insert, the SolidQueue job enqueue,
@@ -213,6 +222,9 @@ and have a log agent collect and ship them. Fluent Bit is the right tool for thi
 Instead of adding a Loki library to your app, Fluent Bit reads directly from
 the container log files on each node, parses them, and forwards structured
 records to Loki. Your app doesn't know Loki exists. That's the production pattern.
+
+![Log pipeline diagram showing Rails Pod writing to stdout, which the container runtime writes to /var/log/containers, which Fluent Bit tails and forwards through its INPUT, FILTER, and OUTPUT stages to Loki, which Grafana then queries](/images/observability/fluent-bit-pipeline.png)
+*The log pipeline. Rails writes to stdout; the container runtime writes that to /var/log/containers; Fluent Bit tails, filters, and forwards to Loki; Grafana queries with LogQL. The app never knows Loki exists.*
 
 Fluent Bit is already included in `skaffold.deps.yaml` as a DaemonSet, so it
 comes up with the rest of the stack. Its configuration lives in

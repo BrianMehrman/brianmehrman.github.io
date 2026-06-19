@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  body { margin: 0; background: white; }
+  svg text { font-family: 'Segoe UI', system-ui, sans-serif; }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 780 430" width="780" height="430" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#555"/>
+    </marker>
+    <marker id="arr-orange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#d97706"/>
+    </marker>
+    <marker id="arr-green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#2a8a4a"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#7c3aed"/>
+    </marker>
+    <filter id="rough" x="-2%" y="-2%" width="104%" height="104%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.2" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+
+  <!-- Rails App -->
+  <rect x="60" y="140" width="180" height="100" rx="6" ry="6"
+        fill="#e3f0ff" stroke="#3b6fd4" stroke-width="2.5" filter="url(#rough)"/>
+  <text x="150" y="168" text-anchor="middle" font-size="14" font-weight="700" fill="#1a3a7a">Rails App</text>
+  <text x="150" y="186" text-anchor="middle" font-size="10" fill="#3b6fd4">Puma + SolidQueue</text>
+  <text x="150" y="202" text-anchor="middle" font-size="10" fill="#3b6fd4">OpenTelemetry SDK</text>
+  <text x="150" y="218" text-anchor="middle" font-size="10" fill="#3b6fd4">prometheus-client gem</text>
+
+  <!-- Jaeger -->
+  <rect x="480" y="30" width="140" height="60" rx="5" ry="5"
+        fill="#fff8dc" stroke="#cca800" stroke-width="2" filter="url(#rough)"/>
+  <text x="550" y="56" text-anchor="middle" font-size="13" font-weight="600" fill="#7a6000">Jaeger</text>
+  <text x="550" y="74" text-anchor="middle" font-size="10" fill="#9a7a00">trace storage + UI</text>
+
+  <path d="M241 160 Q380 80 479 70" stroke="#cca800" stroke-width="2"
+        fill="none" marker-end="url(#arr)"/>
+  <text x="355" y="95" text-anchor="middle" font-size="10" fill="#9a7a00">traces (OTLP HTTP :4318)</text>
+
+  <!-- Prometheus -->
+  <rect x="480" y="160" width="140" height="60" rx="5" ry="5"
+        fill="#fff0e8" stroke="#d97706" stroke-width="2" filter="url(#rough)"/>
+  <text x="550" y="186" text-anchor="middle" font-size="13" font-weight="600" fill="#92400e">Prometheus</text>
+  <text x="550" y="204" text-anchor="middle" font-size="10" fill="#d97706">metrics storage</text>
+
+  <path d="M479 185 Q360 185 242 185" stroke="#d97706" stroke-width="2"
+        fill="none" marker-end="url(#arr-orange)" stroke-dasharray="5,3"/>
+  <text x="360" y="178" text-anchor="middle" font-size="10" fill="#d97706">scrape /metrics (:9090)</text>
+
+  <!-- Loki -->
+  <rect x="480" y="290" width="140" height="60" rx="5" ry="5"
+        fill="#e8fdf0" stroke="#2a8a4a" stroke-width="2" filter="url(#rough)"/>
+  <text x="550" y="316" text-anchor="middle" font-size="13" font-weight="600" fill="#1a5c32">Loki</text>
+  <text x="550" y="334" text-anchor="middle" font-size="10" fill="#2a8a4a">log aggregation</text>
+
+  <!-- Fluent Bit -->
+  <rect x="210" y="295" width="150" height="55" rx="5" ry="5"
+        fill="#f3e8ff" stroke="#7c3aed" stroke-width="2" filter="url(#rough)"/>
+  <text x="285" y="319" text-anchor="middle" font-size="13" font-weight="600" fill="#4c1d95">Fluent Bit</text>
+  <text x="285" y="337" text-anchor="middle" font-size="10" fill="#7c3aed">DaemonSet · log collector</text>
+
+  <path d="M150 241 Q150 280 210 315" stroke="#7c3aed" stroke-width="2"
+        fill="none" marker-end="url(#arr-purple)"/>
+  <text x="148" y="275" text-anchor="end" font-size="10" fill="#7c3aed">stdout →</text>
+  <text x="148" y="287" text-anchor="end" font-size="10" fill="#7c3aed">/var/log/containers</text>
+
+  <line x1="361" y1="322" x2="479" y2="322" stroke="#2a8a4a" stroke-width="2"
+        marker-end="url(#arr-green)"/>
+  <text x="420" y="314" text-anchor="middle" font-size="10" fill="#2a8a4a">forward logs</text>
+
+  <!-- Grafana -->
+  <rect x="670" y="155" width="100" height="140" rx="5" ry="5"
+        fill="#fce8f0" stroke="#c0366a" stroke-width="2" filter="url(#rough)"/>
+  <text x="720" y="215" text-anchor="middle" font-size="13" font-weight="700" fill="#8b1a46">Grafana</text>
+  <text x="720" y="233" text-anchor="middle" font-size="10" fill="#c0366a">dashboards</text>
+  <text x="720" y="249" text-anchor="middle" font-size="10" fill="#c0366a">:3001</text>
+
+  <path d="M620 70 Q700 70 720 155" stroke="#cca800" stroke-width="1.5"
+        fill="none" marker-end="url(#arr)" stroke-dasharray="4,3"/>
+  <line x1="621" y1="190" x2="669" y2="210" stroke="#d97706" stroke-width="1.5"
+        marker-end="url(#arr-orange)" stroke-dasharray="4,3"/>
+  <path d="M620 320 Q700 320 720 296" stroke="#2a8a4a" stroke-width="1.5"
+        fill="none" marker-end="url(#arr-green)" stroke-dasharray="4,3"/>
+
+  <!-- Legend -->
+  <rect x="60" y="385" width="490" height="34" rx="4"
+        fill="#fafafa" stroke="#ddd" stroke-width="1"/>
+  <text x="74" y="399" font-size="9" fill="#555" font-weight="600">LEGEND</text>
+  <line x1="120" y1="399" x2="150" y2="399" stroke="#cca800" stroke-width="2"/>
+  <text x="155" y="403" font-size="9" fill="#555">traces (push)</text>
+  <line x1="230" y1="399" x2="260" y2="399" stroke="#d97706" stroke-width="2" stroke-dasharray="4,2"/>
+  <text x="265" y="403" font-size="9" fill="#555">metrics (scrape)</text>
+  <line x1="350" y1="399" x2="380" y2="399" stroke="#7c3aed" stroke-width="2"/>
+  <text x="385" y="403" font-size="9" fill="#555">logs (tail)</text>
+  <line x1="430" y1="399" x2="460" y2="399" stroke="#888" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <text x="465" y="403" font-size="9" fill="#555">query (Grafana)</text>
+  <text x="120" y="414" font-size="9" fill="#888">solid = push · dashed = pull or query</text>
+</svg>
+</body>
+</html>

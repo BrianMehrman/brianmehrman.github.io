@@ -1,6 +1,5 @@
 ---
 date: '2026-05-16T14:48:41-05:00'
-draft: true
 title: 'Observability Locally With Grafana'
 tags: [observability, rails, grafana, otel, docker]
 ---

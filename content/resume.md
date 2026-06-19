@@ -13,7 +13,7 @@ summary: "Resume — Brian Mehrman, Principal Software Engineer"
 
 ## Summary
 
-Principal Software Engineer focused on platform infrastructure — I build the systems that let engineering teams ship fast. 15+ years across platform engineering, backend architecture, and developer tooling, with active practice in AI/LLM agent workflows. Recent focus: on-demand Kubernetes environments and company-wide CI/CD standards.
+Platform engineers are invisible when things work. After 15+ years building CI/CD pipelines, Kubernetes infrastructure, and developer tooling, I've learned that the real work isn't the technical design — it's getting +30 engineers to trust a shared standard, and keeping it running when they push it in ways you didn't anticipate. I focus on the systems that let teams ship confidently on a Friday. Recent work: on-demand Kubernetes environments and company-wide CI/CD standards. Currently exploring how AI/LLM agent workflows change what "developer tooling" even means.
 
 ---
 
@@ -23,22 +23,22 @@ Principal Software Engineer focused on platform infrastructure — I build the s
 
 **Principal Software Engineer** | Apr 2023–Present
 
-Architect and own platform infrastructure for a ~30-engineer organization; Developer Liaison across product and platform teams.
+Architected and owned platform infrastructure for a +30-engineer organization; Developer Liaison across product and platform teams.
 
-- Built on-demand integration environments on AWS EKS — cut setup from days/weeks to 3–4 hrs, scaled to 50–60 concurrent
-- Authored the company-wide CI/CD standard — 14-stage pipeline, multi-stage Docker builds, semantic versioning, three deployment modes
+- Built on-demand integration environments on AWS EKS — cut setup from days/weeks to hours, scaled to 50–60 concurrent instances
+- Authored the team-wide CI/CD standard — multi-stage pipeline, multi-stage Docker builds, semantic versioning, multiple deployment modes
 - Built a long-lived Sales demo environment on Kubernetes — daily synthetic data, weekly automated rebuilds, on-demand org/user provisioning
-- Led the transition from the legacy pipeline to the E2E pipeline suite (legacy retired Jan 2025); designed namespace-per-service K8s architecture for multi-app environments
-- Ran two company-wide Kubernetes bootcamps (Apr 2023, Dec 2024)
+- Pushed a multi-team CI/CD migration across the finish line despite consistent competition from product work — legacy pipeline retired Jan 2025
+- Made enablement part of major pipeline overhauls — running Kubernetes bootcamps to bring engineering teams along each time the platform shifted
 
 *AWS EKS, Kubernetes, Helm, Docker, Kafka, Snowflake, Datadog, Python, Ruby on Rails*
 
 **Staff Software Engineer** | Oct 2021–Apr 2023
 
 - Migrated all data pipeline workloads to Kubernetes across 5+ workload types (ingestion, batch, streaming, Hadoop)
-- Drove company-wide CI/CD adoption — built the first standardized pipelines for core API and analytics services
+- Drove engineering-wide CI/CD adoption — built the first standardized pipelines for core API and analytics services
 - Built a shared integration environment system (cloud data warehouse, event streaming, persistent storage)
-- Completed a Hadoop NameNode HA migration on Kubernetes; added M1 developer-machine support
+- Completed a Hadoop NameNode HA migration on Kubernetes
 
 *AWS EKS, Kubernetes, Helm, Docker, Hadoop, Kafka, Snowflake, Python, Ruby*
 
@@ -51,14 +51,15 @@ Architect and own platform infrastructure for a ~30-engineer organization; Devel
 **Lead Software Engineer** | May 2019–Oct 2020
 
 - Led a campaign-performance dashboard initiative — replaced fragmented tables with actionable charts (pacing, KPI, agency margin), cutting time to spot at-risk campaigns
-- Designed a real-time campaign collaboration system (WebSocket vs. polling evaluation)
-- Led product-analytics GDPR compliance integration; owned the engineering interview process for QA and frontend roles
+- Designed and shipped a real-time campaign collaboration system, enabling teams to create and manage ad campaigns together
+- Led product-analytics GDPR compliance integration, including owning the engineering hiring process for QA and frontend roles
 
 **Senior / Software Engineer** | Jul 2015–May 2019
 
-- Built the backend for a queued bulk-edit system — async Sidekiq Batch processing, live progress polling, concurrency-limited execution
-- Unified two overlapping data models; implemented rollback for deadlock scenarios under optimistic locking
-- Refactored the monolithic Campaign Overview endpoint into parallel view-specific endpoints for progressive rendering; mentored engineers on Ruby/Rails design
+- Built the backend for a bulk-edit system that let users make large-scale changes across campaigns simultaneously
+- Resolved a deadlock issue where concurrent campaign edits could leave two users stuck — unified the overlapping data models and added rollback handling
+- Refactored the monolithic Campaign Overview endpoint into parallel view-specific endpoints for progressive rendering
+- Provided technical mentorship to engineers — code review, design guidance, and teaching Ruby/Rails concepts
 
 ---
 
@@ -66,8 +67,9 @@ Architect and own platform infrastructure for a ~30-engineer organization; Devel
 
 **Software Development Manager / Application Development Specialist** | Dec 2011–Jul 2015
 
-- Built a multi-tenant LocomotiveCMS application with email-marketing integration; configured AWS DOS defenses
-- Designed a CDN-delivered document storage system for large uploads; established documentation practices that shortened onboarding
+- Built a multi-tenant LocomotiveCMS application with email-marketing integration
+- Diagnosed and mitigated an active DOS attack on AWS infrastructure while keeping the application running
+- Designed a CDN-delivered document storage system for large uploads and documented the client onboarding process around it
 
 ---
 
@@ -84,6 +86,10 @@ Pipeline and tooling for AAA games (*Saints Row 2*, *Red Faction: Guerrilla*) �
 **Diagram Builder** | 2026 | TypeScript, Node, React, Three.js, Neo4j
 
 Open-source code visualization platform — parses repos into a dependency graph, renders 2D/3D layouts (force-directed, radial-BFS), and exports to multiple formats. Built with agent-driven workflows using Claude Code and the Anthropic SDK.
+
+**Observability Sandbox** | 2026 | Ruby, SolidQueue, Postgres, Grafana, OpenTelemetry
+
+Sandbox application demoing observability of an LLM Chatbot. Uses Grafana to show logs and traces of application locally for learning to add observability to your application.
 
 ---
 

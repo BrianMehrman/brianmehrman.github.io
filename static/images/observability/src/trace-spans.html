@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  body { margin: 0; background: white; }
+  svg text { font-family: 'Segoe UI', system-ui, sans-serif; }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 760 290" width="760" height="290" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="rough" x="-2%" y="-2%" width="104%" height="104%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.8" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+
+  <!-- Header -->
+  <text x="10"  y="18" font-size="10" fill="#999" font-weight="600">SPAN</text>
+  <text x="310" y="18" font-size="10" fill="#999" font-weight="600">DURATION</text>
+  <line x1="0" y1="24" x2="760" y2="24" stroke="#e0e0e0" stroke-width="1"/>
+
+  <!-- Timeline ticks -->
+  <text x="310" y="38" font-size="9" fill="#bbb">0ms</text>
+  <text x="432" y="38" font-size="9" fill="#bbb">50ms</text>
+  <text x="554" y="38" font-size="9" fill="#bbb">100ms</text>
+  <text x="686" y="38" font-size="9" fill="#bbb">150ms</text>
+  <line x1="310" y1="40" x2="310" y2="270" stroke="#f0f0f0" stroke-width="1"/>
+  <line x1="432" y1="40" x2="432" y2="270" stroke="#f0f0f0" stroke-width="1"/>
+  <line x1="554" y1="40" x2="554" y2="270" stroke="#f0f0f0" stroke-width="1"/>
+  <line x1="686" y1="40" x2="686" y2="270" stroke="#f0f0f0" stroke-width="1"/>
+
+  <!-- Row 1: Root span -->
+  <text x="10" y="72" font-size="11" font-weight="600" fill="#1a3a7a">POST /chats/:id/messages</text>
+  <text x="10" y="86" font-size="9" fill="#888">rails.action_controller · MessagesController#create</text>
+  <rect x="310" y="60" width="390" height="20" rx="3"
+        fill="#3b6fd4" opacity="0.85" filter="url(#rough)"/>
+  <text x="706" y="74" font-size="9" fill="#3b6fd4" font-weight="600">~155ms</text>
+
+  <!-- Tree connector -->
+  <line x1="30" y1="90" x2="30" y2="190" stroke="#ccc" stroke-width="1.5"/>
+
+  <!-- Row 2: INSERT messages -->
+  <line x1="30" y1="115" x2="50" y2="115" stroke="#ccc" stroke-width="1.5"/>
+  <text x="54" y="112" font-size="11" fill="#1a5c32">INSERT INTO messages</text>
+  <text x="54" y="126" font-size="9" fill="#888">active_record.sql</text>
+  <rect x="310" y="103" width="20" height="18" rx="3"
+        fill="#2a8a4a" opacity="0.85" filter="url(#rough)"/>
+  <text x="334" y="116" font-size="9" fill="#2a8a4a" font-weight="600">~4ms</text>
+
+  <!-- Row 3: INSERT messages (pending) -->
+  <line x1="30" y1="148" x2="50" y2="148" stroke="#ccc" stroke-width="1.5"/>
+  <text x="54" y="145" font-size="11" fill="#1a5c32">INSERT INTO messages (pending)</text>
+  <text x="54" y="159" font-size="9" fill="#888">active_record.sql</text>
+  <rect x="333" y="136" width="16" height="18" rx="3"
+        fill="#2a8a4a" opacity="0.85" filter="url(#rough)"/>
+  <text x="353" y="149" font-size="9" fill="#2a8a4a" font-weight="600">~3ms</text>
+
+  <!-- Row 4: SolidQueue enqueue -->
+  <line x1="30" y1="181" x2="50" y2="181" stroke="#ccc" stroke-width="1.5"/>
+  <text x="54" y="178" font-size="11" fill="#4c1d95">SolidQueue enqueue</text>
+  <text x="54" y="192" font-size="9" fill="#888">INSERT INTO solid_queue_jobs</text>
+  <rect x="353" y="169" width="24" height="18" rx="3"
+        fill="#7c3aed" opacity="0.85" filter="url(#rough)"/>
+  <text x="381" y="182" font-size="9" fill="#7c3aed" font-weight="600">~5ms</text>
+
+  <!-- Trace boundary -->
+  <line x1="0" y1="205" x2="760" y2="205" stroke="#e8e0c0" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <text x="10" y="218" font-size="9" fill="#bba050" font-style="italic">trace boundary — job runs asynchronously, outside this trace</text>
+
+  <!-- Row 5: not yet traced -->
+  <text x="10" y="248" font-size="11" fill="#bbb">LlmResponseJob (not yet traced)</text>
+  <text x="10" y="262" font-size="9" fill="#ccc">would appear here as a separate trace once SolidQueue propagates context</text>
+  <rect x="310" y="236" width="300" height="18" rx="3"
+        fill="#ddd" opacity="0.5" filter="url(#rough)" stroke="#bbb" stroke-width="1"/>
+  <text x="616" y="249" font-size="9" fill="#bbb">~8 000ms</text>
+</svg>
+</body>
+</html>

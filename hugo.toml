@@ -48,7 +48,7 @@ buildFuture = false
 
   [[params.socialIcons]]
     name = 'linkedin'
-    url = 'https://linkedin.com/in/brianmehrman-208a1a1a'
+    url = 'https://linkedin.com/in/brian-mehrman-208a1a1a'
 
   [[params.socialIcons]]
     name = 'rss'

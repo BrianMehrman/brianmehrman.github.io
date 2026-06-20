@@ -38,5 +38,4 @@ I've been exploring AI/LLM agent workflows as a serious development tool. My ope
 ## Get in Touch
 
 - [GitHub](https://github.com/brianmehrman) — code and open-source projects
-- [LinkedIn](https://linkedin.com/in/brianmehrman-208a1a1a) — work history and recommendations
-- [bcmehrman@gmail.com](mailto:bcmehrman@gmail.com)
+- [LinkedIn](https://linkedin.com/in/brian-mehrman-208a1a1a) — work history and recommendations

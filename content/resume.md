@@ -6,7 +6,7 @@ summary: "Resume — Brian Mehrman, Principal Software Engineer"
 ---
 
 <div class="resume-header">
-<p><a href="mailto:bcmehrman@gmail.com">bcmehrman@gmail.com</a> · <a href="https://github.com/brianmehrman">GitHub</a> · <a href="https://linkedin.com/in/brianmehrman-208a1a1a">LinkedIn</a> · Greater Chicago Area</p>
+<p><a href="https://github.com/brianmehrman">GitHub</a> · <a href="https://linkedin.com/in/brian-mehrman-208a1a1a">LinkedIn</a> · Greater Chicago Area</p>
 </div>
 
 ---

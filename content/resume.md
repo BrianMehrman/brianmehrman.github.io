@@ -4,9 +4,8 @@ layout: "resume"
 url: "/resume/"
 summary: "Resume — Brian Mehrman, Principal Software Engineer"
 ---
-
 <div class="resume-header">
-<p><a href="https://github.com/brianmehrman">GitHub</a> · <a href="https://linkedin.com/in/brian-mehrman-208a1a1a">LinkedIn</a> · Greater Chicago Area</p>
+<p><a href="https://github.com/brianmehrman">GitHub</a> · <a href="https://linkedin.com/in/brian-mehrman-208a1a1a">LinkedIn</a> · Greater Chicago Area · <a href="/documents/Brian_Mehrman_Resume.docx">Resume ⬇</a></p>
 </div>
 
 ---
@@ -31,7 +30,7 @@ Architected and owned platform infrastructure for a +30-engineer organization; D
 - Pushed a multi-team CI/CD migration across the finish line despite consistent competition from product work — legacy pipeline retired Jan 2025
 - Made enablement part of major pipeline overhauls — running Kubernetes bootcamps to bring engineering teams along each time the platform shifted
 
-*AWS EKS, Kubernetes, Helm, Docker, Kafka, Snowflake, Datadog, Python, Ruby on Rails*
+*AWS EKS, Kubernetes, Helm, Docker, Kafka, Snowflake, Datadog, Python, Ruby, JavaScript, Java, Go, Bazel *
 
 **Staff Software Engineer** | Oct 2021–Apr 2023
 
@@ -97,11 +96,11 @@ Sandbox application demoing observability of an LLM Chatbot. Uses Grafana to sho
 
 | Area               | Technologies                                                                                           |
 | ------------------ | ------------------------------------------------------------------------------------------------------ |
-| **Languages**      | Ruby, JavaScript, TypeScript, Python, Java, SQL                                                        |
-| **Frameworks**     | Ruby on Rails, Node.js, React, Sinatra                                                                 |
+| **Languages**      | Ruby, Python, JavaScript, TypeScript, Java, GO, Rust, SQL                                              |
+| **Frameworks**     | Ruby on Rails, Node.js, React, Spring                                                                  |
 | **Infrastructure** | AWS EKS, Kubernetes, Helm, Docker, Kafka, Snowflake, Redis, PostgreSQL, MySQL, Datadog                 |
-| **CI/CD**          | Pipeline design and standards, Docker multi-stage builds, semantic versioning, Harness                 |
-| **AI/LLM**         | Claude Agent SDK, Anthropic API, Claude Code, agent workflow design                                    |
+| **CI/CD**          | Pipeline design and standards, Docker multi-stage builds, semantic versioning, Harness.io, GitHub Actions, Jenkins, OpenTofu                 |
+| **AI/LLM**         | Claude Agent SDK, Anthropic API, Claude Code, Copilot, Ollama, agent workflow design                                    |
 | **Practices**      | Platform architecture, distributed systems, developer tooling, DX, observability, technical mentorship |
 
 ---

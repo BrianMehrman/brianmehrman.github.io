@@ -12,7 +12,7 @@ summary: "Resume — Brian Mehrman, Principal Software Engineer"
 
 ## Summary
 
-Platform engineers are invisible when things work. After 15+ years building CI/CD pipelines, Kubernetes infrastructure, and developer tooling, I've learned that the real work isn't the technical design — it's getting +30 engineers to trust a shared standard, and keeping it running when they push it in ways you didn't anticipate. I focus on the systems that let teams ship confidently on a Friday. Recent work: on-demand Kubernetes environments and company-wide CI/CD standards. Currently exploring how AI/LLM agent workflows change what "developer tooling" even means.
+Principal Software Engineer with experience designing backend services, APIs, and multi-user applications, alongside shared engineering infrastructure. Delivered microservice extraction, real-time collaboration, and concurrency improvements. Provides cross-team technical leadership, architecture guidance, and mentorship, with additional depth in Kubernetes and CI/CD.
 
 ---
 

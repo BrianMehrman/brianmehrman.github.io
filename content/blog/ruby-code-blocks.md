@@ -1,4 +1,5 @@
 ---
+summary: "Learn how Ruby passes blocks and how methods call them."
 title: "Ruby Code Blocks"
 date: 2019-01-13T00:00:00-05:00
 tags: []

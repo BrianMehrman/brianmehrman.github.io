@@ -1,22 +1,11 @@
 ---
+summary: "Run a local Rails observability stack and inspect request traces, metrics, and logs."
 date: '2026-05-16T14:48:41-05:00'
 title: 'Observability Locally With Grafana'
 tags: [observability, rails, grafana, otel, docker]
 ---
 
-When programming you need to know what is happening inside that function or method.
-You need to reproduce a bug or you are debugging a performance issue.
-Most of the time adding a trace statement is enough.
-
-When debugging production, you're not going to find the answer with a trace message on a remove server.
-At some point your app gets complicated enough that you need to see what's
-actually happening — not guess. That's where observability comes in.
-
-Observability means your system tells you what it's doing: how long each operation
-takes, how often things fail, and what happened right before something went wrong.
-And it turns out the same signals that help you debug production are the ones that
-let you wire up AI-driven automation later — but that's a story for another post.
-Today, let's get the stack running locally.
+Set up a local observability stack for a Rails app. You’ll trace a chat request through database writes and job enqueue, inspect metrics in Prometheus, and query logs in Grafana.
 
 ## What we're building
 
@@ -27,7 +16,7 @@ something worth observing: HTTP requests, background jobs, and external API call
 all in one flow.
 
 By the end of this post, you'll have:
-- Distributed traces in Jaeger showing the full request → job → LLM span chain
+- Distributed traces in Jaeger showing the request through the SolidQueue enqueue
 - Prometheus metrics scraped from the Rails app
 - Logs collected by Fluent Bit and queryable in Loki
 - All of it visible in a single Grafana dashboard
@@ -152,8 +141,7 @@ The `OTEL_ENABLED` guard means the app runs normally in tests and CI without
 touching the observability stack. The OTLP exporter picks up
 `OTEL_EXPORTER_OTLP_ENDPOINT` from the environment (default: `http://localhost:4318`).
 
-For the LLM client, wrap the HTTP call in a manual span so the trace shows the
-LLM as a child of the background job:
+For the LLM client, a manual span measures the HTTP call. Linking it to the request trace requires context propagation through SolidQueue:
 
 ```ruby
 tracer = OpenTelemetry.tracer_provider.tracer("llm_client")
@@ -177,20 +165,18 @@ automatically `kubectl port-forward`s the Jaeger collector to `localhost:4318`,
 so traces flow without any manual plumbing.
 
 ![Jaeger-style waterfall showing the POST request as root span with three child spans: two ActiveRecord inserts and a SolidQueue enqueue. A dashed line marks the trace boundary below which LlmResponseJob is greyed out as not yet traced.](/images/observability/trace-spans.png)
-*A single OTEL trace for one chat message. The three spans inside the boundary show the controller, two DB inserts, and the SolidQueue enqueue. The job and LLM call would appear in a future trace once SolidQueue propagates context.*
+*A single OTEL trace for one chat message. Inside the boundary, the controller's root span has three children: two DB inserts and the SolidQueue enqueue. The job and LLM call would appear in a future trace once SolidQueue propagates context.*
 
 Send a chat message, then open the Jaeger UI at `http://localhost:16686`. Select
 the `rails-llm-demo` service and click "Find Traces." You'll see the HTTP POST
-trace with three child spans: the ActiveRecord insert, the SolidQueue job enqueue,
-and — once the job runs — the `llm.chat` span showing exactly how long the LLM
-took to respond.
+trace with two ActiveRecord insert spans and the SolidQueue enqueue span.
 
 ## Patterns worth monitoring
 
 Once you have traces and metrics flowing, here are three things to actually
 watch and what they tell you.
 
-**LLM p95 latency** — In Jaeger, filter traces by operation name `llm.chat`
+**LLM p95 latency** — Once the worker exports the LLM span, filter traces by operation name `llm.chat`
 and look at the latency distribution. The p95 (95th percentile) is the number
 to care about: it tells you what a bad-but-not-worst-case user experience looks
 like. Local LLMs can vary wildly — a cold Ollama model might take 30 seconds;
@@ -288,10 +274,6 @@ to take it further:
   them at a glance instead of running them manually in Explore.
 - **Alerting** — use Grafana's alert rules to get a notification when LLM error
   rate crosses a threshold.
-- **Extend to other services** — the same OTEL initializer pattern works for any
-  Ruby process. Add it to your workers, CLIs, or a second service and traces
-  will automatically connect across service boundaries.
+- **Extend to other services** — initialize OTEL in workers and other services and propagate trace context across service boundaries.
 
-The stack you built here is the same one you'd run in production — scaled up,
-but structurally identical. That's the point: local observability shouldn't be
-a toy. It should be the real thing.
+A production deployment also needs access controls, retention policies, and monitoring for the telemetry pipeline itself.

@@ -1,4 +1,5 @@
 ---
+summary: "Review Git commands for inspecting history and working with branches."
 title: "Git Tips"
 date: 2018-02-06T00:00:00-05:00
 tags: []

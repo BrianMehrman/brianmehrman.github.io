@@ -1,4 +1,5 @@
 ---
+summary: "Compare two Ruby metaprogramming techniques and how each handles scope."
 title: "class_eval vs define_method"
 date: 2017-04-26T00:00:00-05:00
 tags: []

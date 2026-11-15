@@ -2,10 +2,10 @@
 title: "About"
 layout: "about"
 url: "/about/"
-summary: "About Brian Mehrman — Platform Engineer, Architect, Mentor"
+summary: "About Brian Mehrman — Principal Software Engineer"
 ---
 
-I'm a Principal Software Engineer based in the Greater Chicago area, focused on platform infrastructure and developer tooling that lets engineering teams move fast without breaking things — building cloud-native systems for multi-team engineering organizations.
+I’m a Principal Software Engineer in the Greater Chicago area. My work at Basis Technologies spans advertising product data, backend services, and the tools teams use to validate and release changes.
 
 ## Background
 
@@ -15,11 +15,9 @@ After game dev, I moved into web development and spent a decade growing through 
 
 ## What I Do
 
-I work at the intersection of infrastructure, developer experience, and architecture. Most recently at Basis Technologies, I:
+At Centro and Basis, I worked on ad inventory relationships and campaign reporting. Seeing how hard it was to validate changes against shifting QA data shaped my work on release validation.
 
-- Designed and led an **on-demand full-stack test environment system** on AWS EKS — reduced setup from **days-to-weeks down to 3–4 hours**, scaled to **50–60 concurrent environments**, and enabled teams to run parallel feature and integration testing without blocking shared environments
-- Authored the **company-wide CI/CD pipeline standard** adopted across engineering — a 14-stage pipeline with Docker multi-stage builds, semantic versioning, and three deployment modes, replacing ad-hoc pipeline configurations across the organization
-- Built and maintained the **Kubernetes platform** that runs product services, data pipelines, and developer tooling for the full engineering organization
+As Staff, I led the first [on-demand EKS test environment](/portfolio/kubernetes-test-environments/) rollout with Kustomize and Python. As Principal, I led the move to Helm and self-service delivery. I also authored a [shared CI/CD pipeline standard](/portfolio/cicd-pipeline-standard/) and work on observability and incident response.
 
 ## How I Work
 
@@ -29,13 +27,12 @@ I care about documentation, naming things well, and making systems legible to th
 
 I work closely with product and team leads to make sure platform investments line up with real bottlenecks in delivery.
 
-I'm drawn to problems at the edge of "this is how we've always done it." Those are the places where questioning the constraint leads to a 10x improvement rather than an incremental one.
-
 ## Outside Work
 
-I've been exploring AI/LLM agent workflows as a serious development tool. My open-source **[Diagram Builder](https://github.com/brianmehrman)** — a tool that turns TypeScript codebases into interactive 3D dependency graphs using React, Three.js, and Neo4j — was built primarily through agent-driven development with Claude and the Anthropic SDK.
+I've been exploring AI/LLM agent workflows as a serious development tool. My open-source **[Diagram Builder](/portfolio/diagram-builder/)** — a tool that turns TypeScript codebases into interactive 3D dependency graphs using React, Three.js, and Neo4j — was built primarily through agent-driven development with Claude and the Anthropic SDK.
 
 ## Get in Touch
+
 
 - [GitHub](https://github.com/brianmehrman) — code and open-source projects
 - [LinkedIn](https://linkedin.com/in/brian-mehrman-208a1a1a) — work history and recommendations

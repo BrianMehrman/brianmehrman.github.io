@@ -145,7 +145,8 @@ time,
   background: var(--surface) !important;
 }
 
-.entry-header h2 {
+.entry-header h2,
+.entry-header h3 {
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0 0 0.25rem;
@@ -309,6 +310,10 @@ blockquote p {
 }
 
 /* ── Portfolio cards ─────────────────────────────────────── */
+.portfolio-section + .portfolio-section {
+  margin-top: 2.5rem;
+}
+
 .portfolio-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -403,9 +408,9 @@ blockquote p {
 /* ── Homepage ────────────────────────────────────────────── */
 .home-hero {
   text-align: center;
-  padding: 4rem 1rem 3rem;
+  padding: 2rem 1rem 1.5rem;
   border-bottom: 1px solid var(--border);
-  margin-bottom: 3rem;
+  margin-bottom: 1.75rem;
 }
 
 .hero-inner {
@@ -423,15 +428,15 @@ blockquote p {
 }
 
 .hero-tagline {
-  color: var(--text-secondary) !important;
+  color: var(--text-primary) !important;
   font-size: 1rem;
   margin: 0 0 1rem;
   letter-spacing: 0.02em;
 }
 
 .hero-bio {
-  color: var(--text-secondary) !important;
-  font-size: 0.9375rem;
+  color: var(--text-primary) !important;
+  font-size: 1rem;
   line-height: 1.65;
   margin: 0 0 1.5rem;
   max-width: 420px;
@@ -443,7 +448,8 @@ blockquote p {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
   margin-bottom: 1.5rem;
 }
 

@@ -14,7 +14,7 @@ buildFuture = false
 [params]
   env = 'production'
   title = 'Brian Mehrman'
-  description = 'Platform Engineer · Architect · Mentor. Writing about systems that scale and engineers who grow.'
+  description = 'Principal Software Engineer building backend and platform systems teams can change safely.'
   keywords = ['platform engineering', 'architecture', 'kubernetes', 'mentorship', 'software engineering']
   author = 'Brian Mehrman'
   dateFormat = 'January 2, 2006'
@@ -37,7 +37,7 @@ buildFuture = false
 
   [params.homeInfoParams]
     Title = 'Brian Mehrman'
-    Content = 'Platform Engineer · Architect · Mentor'
+    Content = 'Principal Software Engineer'
 
   [params.profileMode]
     enabled = false

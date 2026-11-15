@@ -5,11 +5,13 @@ featured: true
 weight: 3
 impact: "Open-source code visualization platform that parses repositories into dependency graphs with 2D/3D rendering."
 tech: ["TypeScript", "Node.js", "React", "Three.js", "Neo4j"]
-link: "https://github.com/brianmehrman"
+link: "https://github.com/BrianMehrman/diagram_builder"
 tier: "open-source"
 ---
 
 ## Overview
+
+Source: [BrianMehrman/diagram_builder on GitHub](https://github.com/BrianMehrman/diagram_builder)
 
 Diagram Builder is an open-source code visualization platform built to make large codebases navigable. It parses repositories into a dependency graph, renders them in both 2D and 3D layouts, and exports to multiple formats.
 

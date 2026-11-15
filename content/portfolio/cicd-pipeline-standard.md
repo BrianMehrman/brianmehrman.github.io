@@ -1,5 +1,6 @@
 ---
 title: "Company-Wide CI/CD Pipeline Standard"
+date: 2022-06-01
 featured: true
 tech: ["Docker", "Kubernetes", "Harness", "Python", "Ruby"]
 tier: "work"

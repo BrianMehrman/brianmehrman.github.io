@@ -1,19 +1,56 @@
 {{- define "main" }}
 <header class="page-header">
-  <h1>{{ .Title }}</h1>
+  <h1>
+    {{ .Title }}
+    {{- if .Param "ShowRssButtonInSectionTermList" }}
+    {{- with .OutputFormats.Get "rss" }}
+    <a href="{{ .RelPermalink }}" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+    {{- end }}
+    {{- end }}
+  </h1>
 </header>
-{{- range .RegularPages.GroupByDate "2006" }}
+
+{{- $paginator := .Paginate (.RegularPages.GroupByDate "2006") }}
+{{- range $i, $group := $paginator.PageGroups }}
 <section class="home-section">
-  <h2>{{ if eq .Key (now.Format "2006") }}Recent writing{{ else }}Archive · {{ .Key }}{{ end }}</h2>
-  {{- range .Pages }}
+  {{- /* The newest year on the first page is "Recent writing"; this depends only on content, not on build time. */}}
+  <h2>{{ if and (eq $paginator.PageNumber 1) (eq $i 0) }}Recent writing{{ else }}Archive · {{ $group.Key }}{{ end }}</h2>
+  {{- range $group.Pages }}
   <article class="post-entry">
     <header class="entry-header">
-      <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+      <h3>{{ .Title }}</h3>
     </header>
-    <div class="entry-content"><p>{{ .Summary }}</p></div>
-    <footer class="entry-footer"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time></footer>
+    {{- if (ne (.Param "hideSummary") true) }}
+    <div class="entry-content"><p>{{ .Summary | plainify | htmlUnescape }}{{ if .Truncated }}...{{ end }}</p></div>
+    {{- end }}
+    {{- if not (.Param "hideMeta") }}
+    <footer class="entry-footer">
+      {{- partial "post_meta.html" . -}}
+    </footer>
+    {{- end }}
+    <a class="entry-link" aria-label="post link to {{ .Title | plainify }}" href="{{ .Permalink }}"></a>
   </article>
   {{- end }}
 </section>
+{{- end }}
+
+{{- if gt $paginator.TotalPages 1 }}
+<footer class="page-footer">
+  <nav class="pagination">
+    {{- if $paginator.HasPrev }}
+    <a class="prev" href="{{ $paginator.Prev.URL | absURL }}">«&nbsp;{{ i18n "prev_page" }}</a>
+    {{- end }}
+    {{- if $paginator.HasNext }}
+    <a class="next" href="{{ $paginator.Next.URL | absURL }}">{{ i18n "next_page" }}&nbsp;»</a>
+    {{- end }}
+  </nav>
+</footer>
 {{- end }}
 {{- end }}

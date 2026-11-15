@@ -12,8 +12,10 @@
       <a href="/portfolio/">View platform work</a>
       <span class="hero-nav-sep">·</span>
       <a href="/resume/">Read the resume</a>
+      {{- range where .Site.Params.socialIcons "name" "linkedin" | first 1 }}
       <span class="hero-nav-sep">·</span>
-      <a href="https://www.linkedin.com/in/brian-mehrman-208a1a1a/">Contact on LinkedIn</a>
+      <a href="{{ .url | safeURL }}">Contact on LinkedIn</a>
+      {{- end }}
     </nav>
     <div class="social-icons hero-social">
       {{- range .Site.Params.socialIcons }}

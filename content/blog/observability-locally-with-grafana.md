@@ -165,7 +165,7 @@ automatically `kubectl port-forward`s the Jaeger collector to `localhost:4318`,
 so traces flow without any manual plumbing.
 
 ![Jaeger-style waterfall showing the POST request as root span with three child spans: two ActiveRecord inserts and a SolidQueue enqueue. A dashed line marks the trace boundary below which LlmResponseJob is greyed out as not yet traced.](/images/observability/trace-spans.png)
-*A single OTEL trace for one chat message. The three spans inside the boundary show the controller, two DB inserts, and the SolidQueue enqueue. The job and LLM call would appear in a future trace once SolidQueue propagates context.*
+*A single OTEL trace for one chat message. Inside the boundary, the controller's root span has three children: two DB inserts and the SolidQueue enqueue. The job and LLM call would appear in a future trace once SolidQueue propagates context.*
 
 Send a chat message, then open the Jaeger UI at `http://localhost:16686`. Select
 the `rails-llm-demo` service and click "Find Traces." You'll see the HTTP POST

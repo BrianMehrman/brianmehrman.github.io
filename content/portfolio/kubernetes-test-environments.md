@@ -1,5 +1,6 @@
 ---
 title: "On-Demand Kubernetes Test Environments"
+date: 2023-04-01
 featured: true
 tech: ["Kubernetes", "AWS EKS", "Helm", "Docker", "Python"]
 tier: "work"

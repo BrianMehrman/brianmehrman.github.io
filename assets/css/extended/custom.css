@@ -145,7 +145,8 @@ time,
   background: var(--surface) !important;
 }
 
-.entry-header h2 {
+.entry-header h2,
+.entry-header h3 {
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0 0 0.25rem;
@@ -309,6 +310,10 @@ blockquote p {
 }
 
 /* ── Portfolio cards ─────────────────────────────────────── */
+.portfolio-section + .portfolio-section {
+  margin-top: 2.5rem;
+}
+
 .portfolio-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));

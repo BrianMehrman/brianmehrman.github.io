@@ -2,6 +2,7 @@
 title: "Diagram Builder"
 date: 2026-01-01
 featured: true
+weight: 3
 impact: "Open-source code visualization platform that parses repositories into dependency graphs with 2D/3D rendering."
 tech: ["TypeScript", "Node.js", "React", "Three.js", "Neo4j"]
 link: "https://github.com/brianmehrman"

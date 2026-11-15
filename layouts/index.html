@@ -4,16 +4,16 @@
 <section class="home-hero">
   <div class="hero-inner">
     <h1 class="hero-name">BRIAN MEHRMAN</h1>
-    <p class="hero-tagline">Platform Engineer · Architect · Mentor</p>
+    <p class="hero-tagline">Principal Software Engineer building backend and platform systems teams can change safely.</p>
     <p class="hero-bio">
-      I build the infrastructure that helps engineering teams ship. I write about what I learn along the way.
+      At Basis, I led two iterations of on-demand Kubernetes test environments. Teams can bring up the application and its analytics in about four hours.
     </p>
     <nav class="hero-nav">
-      <a href="/blog/">Writing</a>
+      <a href="/portfolio/">View platform work</a>
       <span class="hero-nav-sep">·</span>
-      <a href="/portfolio/">Portfolio</a>
+      <a href="/resume/">Read the resume</a>
       <span class="hero-nav-sep">·</span>
-      <a href="/resume/">Resume</a>
+      <a href="https://www.linkedin.com/in/brian-mehrman-208a1a1a/">Contact on LinkedIn</a>
     </nav>
     <div class="social-icons hero-social">
       {{- range .Site.Params.socialIcons }}
@@ -24,6 +24,34 @@
     </div>
   </div>
 </section>
+
+<!-- ── Selected Work ─────────────────────────────────── -->
+{{- $projects := where .Site.RegularPages "Section" "portfolio" }}
+{{- $featured := where $projects ".Params.featured" true }}
+{{- if not $featured }}{{- $featured = $projects | first 3 }}{{- end }}
+{{- if $featured }}
+<section class="home-section">
+  <div class="home-section-header">
+    <span class="section-label">Selected Work</span>
+    <a href="/portfolio/" class="section-all-link">All projects →</a>
+  </div>
+  <div class="work-cards">
+    {{- range $featured.ByWeight }}
+    <a href="{{ .Permalink }}" class="work-card">
+      <div class="work-card-title">{{ .Title }}</div>
+      <div class="work-card-impact">{{ .Params.impact }}</div>
+      {{- if .Params.tech }}
+      <div class="work-card-tech">
+        {{- range .Params.tech }}
+        <span class="tech-pill">{{ . }}</span>
+        {{- end }}
+      </div>
+      {{- end }}
+    </a>
+    {{- end }}
+  </div>
+</section>
+{{- end }}
 
 <!-- ── Recent Writing ────────────────────────────────── -->
 {{- $posts := where .Site.RegularPages "Section" "blog" }}
@@ -46,34 +74,6 @@
         {{- end }}
       </div>
     </article>
-    {{- end }}
-  </div>
-</section>
-{{- end }}
-
-<!-- ── Selected Work ─────────────────────────────────── -->
-{{- $projects := where .Site.RegularPages "Section" "portfolio" }}
-{{- $featured := where $projects ".Params.featured" true }}
-{{- if not $featured }}{{- $featured = $projects | first 3 }}{{- end }}
-{{- if $featured }}
-<section class="home-section">
-  <div class="home-section-header">
-    <span class="section-label">Selected Work</span>
-    <a href="/portfolio/" class="section-all-link">All projects →</a>
-  </div>
-  <div class="work-cards">
-    {{- range $featured }}
-    <a href="{{ .Permalink }}" class="work-card">
-      <div class="work-card-title">{{ .Title }}</div>
-      <div class="work-card-impact">{{ .Params.impact }}</div>
-      {{- if .Params.tech }}
-      <div class="work-card-tech">
-        {{- range .Params.tech }}
-        <span class="tech-pill">{{ . }}</span>
-        {{- end }}
-      </div>
-      {{- end }}
-    </a>
     {{- end }}
   </div>
 </section>

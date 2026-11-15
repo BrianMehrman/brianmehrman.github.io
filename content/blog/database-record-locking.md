@@ -1,4 +1,5 @@
 ---
+summary: "Explore PostgreSQL row lock modes and when transactions block each other."
 title: "Postgresql Record Locking"
 date: 2018-06-23T00:00:00-05:00
 tags: []

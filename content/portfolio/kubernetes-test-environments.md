@@ -1,32 +1,30 @@
 ---
 title: "On-Demand Kubernetes Test Environments"
-date: 2023-04-01
 featured: true
-impact: "Reduced integration test environment setup from days-to-weeks to 3-4 hours; scaled to 50-60 concurrent environments for a 30-engineer org."
 tech: ["Kubernetes", "AWS EKS", "Helm", "Docker", "Python"]
 tier: "work"
+weight: 1
+impact: "Teams can bring up the application and Snowflake-backed analytics in about four hours. Peak usage reached 50–60 concurrent environments."
 ---
 
-## The Problem
+## Problem
 
-Basis Technologies ran shared long-lived integration environments. Engineers queued up, stepped on each other's changes, and environment contention was a constant source of delays. Setting up a fresh environment could take days — sometimes weeks if infrastructure issues arose.
+Teams relied on shared staging for full-system validation. QA data derived from production changed over time, making campaign and analytics regressions hard to reproduce.
 
-## The Solution
+## First iteration as Staff
 
-I designed and led the build of an on-demand full-stack environment system on AWS EKS. Each environment runs the full platform stack: application services, data warehouse, event streaming, and persistent storage.
+I led the cross-team design and contributed changes in service repositories. We used Kustomize, scripts, and Python-generated manifests to create environments on AWS EKS on demand and tear them down automatically. The first iteration grouped each environment into a namespace.
 
-Key design decisions:
-- **Namespace-per-environment** — complete isolation at the Kubernetes layer, no cross-contamination
-- **Pipeline-triggered provisioning** — engineers request an environment through the CI/CD pipeline, not through manual ops work
-- **Automated teardown** — environments are destroyed after use, keeping costs predictable
+## Second iteration as Principal
 
-## Results
+I led the move to Helm and Harness Continuous Delivery. Service teams adopted Helm charts and the later rollout used per-service namespaces. Engineers could select services, versions, and synthetic datasets through standard or custom Harness inputs.
 
-- Setup time: **days-to-weeks → 3-4 hours**
-- Concurrent environments at peak: **50-60**
-- Shared long-lived environments: **fully retired**
-- Environment contention incidents: **eliminated**
+The test flow began with synthetic campaigns and delivery scenarios generated through Rails application code. Rails and PostgreSQL held application state, Kafka carried events to Snowflake, and a dedicated analytics service served results back to the Rails UI.
 
-## Scope
+## Data tradeoff
 
-This was a multi-quarter initiative. I handled architecture, implementation, documentation, and rollout — including two company-wide bootcamp sessions (Apr 2023, Dec 2024) to onboard the 30-engineer organization.
+We regenerated data for each environment so teams could reproduce known scenarios without depending on client data. That added startup time. Cross-database snapshots were brittle because changes on a single main branch could break Snowflake loading, and we lacked an effective gate to catch those changes early.
+
+## Outcome
+
+An environment with the application and Snowflake-backed analytics took about four hours to provision. Usage reached 50–60 concurrent environments at peak, giving teams a way to validate changes earlier and in parallel.

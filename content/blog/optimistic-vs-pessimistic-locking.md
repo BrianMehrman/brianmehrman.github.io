@@ -1,4 +1,5 @@
 ---
+summary: "Compare ways to handle conflicting writes when two sessions update the same record."
 title: "Optimistic vs Pessimistic Locking"
 date: 2018-05-29T00:00:00-05:00
 tags: []

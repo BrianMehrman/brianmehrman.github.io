@@ -5,110 +5,70 @@ url: "/resume/"
 summary: "Resume — Brian Mehrman, Principal Software Engineer"
 ---
 <div class="resume-header">
-<p><a href="https://github.com/brianmehrman">GitHub</a> · <a href="https://linkedin.com/in/brian-mehrman-208a1a1a">LinkedIn</a> · Greater Chicago Area · <a href="/documents/Brian_Mehrman_Resume.docx">Resume ⬇</a></p>
+<p><a href="https://github.com/brianmehrman">GitHub</a> · <a href="https://linkedin.com/in/brian-mehrman-208a1a1a">LinkedIn</a> · Greater Chicago Area · <a href="/documents/Brian_Mehrman_Resume.docx">Download Word resume</a></p>
 </div>
 
 ---
 
 ## Summary
 
-Principal Software Engineer with experience designing backend services, APIs, and multi-user applications, alongside shared engineering infrastructure. Delivered microservice extraction, real-time collaboration, and concurrency improvements. Provides cross-team technical leadership, architecture guidance, and mentorship, with additional depth in Kubernetes and CI/CD.
+Principal Software Engineer with 15+ years across backend product development, data modeling, platform architecture, and developer tooling. Hands-on experience with an advertising product catalog and the campaign workflows it supports, followed by cross-team leadership on synthetic data, on-demand Kubernetes environments, CI/CD standards, and observability. Set technical direction for release validation across a 30-engineer organization and use AI tools in day-to-day implementation, investigation, code review, and documentation.
 
----
+## Selected skills
+
+**Architecture and data:** Service integration, API design, relational data modeling, distributed data flows, PostgreSQL, Kafka, Snowflake, Ruby on Rails
+
+**Platform and delivery:** AWS EKS, Kubernetes, Helm, Docker, self-service test environments, CI/CD standards, Harness, Datadog
+
+**Languages and AI:** Ruby, Python, JavaScript, TypeScript, SQL; Claude Code, AI-assisted engineering workflows
 
 ## Experience
 
 ### Basis Technologies (formerly Centro) — Chicago, IL
 
-**Principal Software Engineer** | Apr 2023–Present
+**Principal Software Engineer | Apr 2023–Present**
 
-Architected and owned platform infrastructure for a +30-engineer organization; Developer Liaison across product and platform teams.
+- Set technical direction for release validation and platform tooling across an approximately 30-engineer organization, working with product and service teams to make full-system testing available before release.
+- Led the second iteration of on-demand EKS environments, replacing Kustomize and Python-generated manifests with Helm-based deployment through a self-service continuous delivery workflow. Teams can choose service versions, add services, and select synthetic datasets.
+- Enabled test environments with the application, supporting services, and Snowflake-backed analytics; environments are ready in about four hours and supported 50–60 concurrent instances at peak.
+- Authored a shared CI/CD pipeline standard and created a service-version repository used by delivery pipelines and end-to-end environment configuration. Led migration from the legacy environment pipeline, retired in January 2025.
+- Lead observability, incident response, postmortems, and follow-up fixes. Use AI tools to investigate failures, review code, plan changes, and maintain documentation; created Datadog and deployment-tool investigation skills that colleagues use.
 
-- Built on-demand integration environments on AWS EKS — cut setup from days/weeks to hours, scaled to 50–60 concurrent instances
-- Authored the team-wide CI/CD standard — multi-stage pipeline, multi-stage Docker builds, semantic versioning, multiple deployment modes
-- Built a long-lived Sales demo environment on Kubernetes — daily synthetic data, weekly automated rebuilds, on-demand org/user provisioning
-- Pushed a multi-team CI/CD migration across the finish line despite consistent competition from product work — legacy pipeline retired Jan 2025
-- Made enablement part of major pipeline overhauls — running Kubernetes bootcamps to bring engineering teams along each time the platform shifted
+**Staff Software Engineer | Oct 2020–Apr 2023**
 
-*AWS EKS, Kubernetes, Helm, Docker, Kafka, Snowflake, Datadog, Python, Ruby, JavaScript, Java, Go, Bazel *
+- Led the on-demand end-to-end test environment initiative across teams, defining how services, synthetic data, and analytics fit together and contributing integration changes in service-owning repositories.
+- Drove the first EKS environment iteration with the team, using Kubernetes, Kustomize, scripts, and Python-generated manifests; on-demand creation and automated teardown were available by the end of the Staff role.
+- Helped build a repeatable synthetic-data generator using application code paths and configurable JSON templates to create campaign, entity, and delivery scenarios without depending on client data.
+- Worked with the team to extract the analytics backend from the Rails monolith into a dedicated service.
 
-**Staff Software Engineer** | Oct 2021–Apr 2023
+**Lead Software Engineer | May 2019–Oct 2020**
 
-- Migrated all data pipeline workloads to Kubernetes across 5+ workload types (ingestion, batch, streaming, Hadoop)
-- Drove engineering-wide CI/CD adoption — built the first standardized pipelines for core API and analytics services
-- Built a shared integration environment system (cloud data warehouse, event streaming, persistent storage)
-- Completed a Hadoop NameNode HA migration on Kubernetes
+- Led team implementation of the Campaign Performance Dashboard, concentrating personally on backend data and testing. The dashboard remains in use and has grown with campaign and line-item views.
+- Built reusable Rails aggregation logic to surface delivery metrics at campaign, proposal, line-item, and optional flight or group/tactic levels; identified the need for repeatable test data as regression tests struggled with changing production-derived records.
 
-*AWS EKS, Kubernetes, Helm, Docker, Hadoop, Kafka, Snowflake, Python, Ruby*
+**Senior Software Engineer / Software Engineer | Jul 2015–May 2019**
 
-**Staff Software Engineer** | Oct 2020–Oct 2021
-
-- Migrated the analytics data backend from monolith to a dedicated microservice
-- Built Kubernetes local-dev tooling adopted across engineering; set up the initial K8s environment for the core platform app
-- Built a Dockerized synthetic data generation service for integration testing
-
-**Lead Software Engineer** | May 2019–Oct 2020
-
-- Led a campaign-performance dashboard initiative — replaced fragmented tables with actionable charts (pacing, KPI, agency margin), cutting time to spot at-risk campaigns
-- Designed and shipped a real-time campaign collaboration system, enabling teams to create and manage ad campaigns together
-- Led product-analytics GDPR compliance integration, including owning the engineering hiring process for QA and frontend roles
-
-**Senior / Software Engineer** | Jul 2015–May 2019
-
-- Built the backend for a bulk-edit system that let users make large-scale changes across campaigns simultaneously
-- Resolved a deadlock issue where concurrent campaign edits could leave two users stuck — unified the overlapping data models and added rollback handling
-- Refactored the monolithic Campaign Overview endpoint into parallel view-specific endpoints for progressive rendering
-- Provided technical mentorship to engineers — code review, design guidance, and teaching Ruby/Rails concepts
-
----
+- Worked on the ad inventory product catalog's vendor, property, placement, and contact relationships. Primarily contributed backend/database design and data access logic for property contacts, with API-to-UI integration and cross-stack debugging.
+- Built backend support for bulk campaign editing and refactored the Campaign Overview endpoint into view-specific APIs for progressive rendering.
 
 ### Tukaiz, LLC — Franklin Park, IL
 
-**Software Development Manager / Application Development Specialist** | Dec 2011–Jul 2015
+**Software Development Manager / Application Development Specialist | Dec 2011–Jul 2015**
 
-- Built a multi-tenant LocomotiveCMS application with email-marketing integration
-- Diagnosed and mitigated an active DOS attack on AWS infrastructure while keeping the application running
-- Designed a CDN-delivered document storage system for large uploads and documented the client onboarding process around it
-
----
+- Built backend applications and developer workflows, including a multi-tenant CMS, a document delivery system, and onboarding documentation.
 
 ### Volition / THQ — Champaign, IL
 
-**Technical Artist** | Jun 2007–Jan 2011
+**Technical Artist | Jun 2007–Jan 2011**
 
-Pipeline and tooling for AAA games (*Saints Row 2*, *Red Faction: Guerrilla*) — Python/MaxScript editors with live in-game feedback and a camera-based parallax shader solution.
+- Built Python-based tools for game content creation and rapid iteration.
 
----
+## Selected projects
 
-## Projects
-
-**Diagram Builder** | 2026 | TypeScript, Node, React, Three.js, Neo4j
-
-Open-source code visualization platform — parses repos into a dependency graph, renders 2D/3D layouts (force-directed, radial-BFS), and exports to multiple formats. Built with agent-driven workflows using Claude Code and the Anthropic SDK.
-
-**Observability Sandbox** | 2026 | Ruby, SolidQueue, Postgres, Grafana, OpenTelemetry
-
-Sandbox application demoing observability of an LLM Chatbot. Uses Grafana to show logs and traces of application locally for learning to add observability to your application.
-
----
-
-## Skills
-
-| Area               | Technologies                                                                                           |
-| ------------------ | ------------------------------------------------------------------------------------------------------ |
-| **Languages**      | Ruby, Python, JavaScript, TypeScript, Java, GO, Rust, SQL                                              |
-| **Frameworks**     | Ruby on Rails, Node.js, React, Spring                                                                  |
-| **Infrastructure** | AWS EKS, Kubernetes, Helm, Docker, Kafka, Snowflake, Redis, PostgreSQL, MySQL, Datadog                 |
-| **CI/CD**          | Pipeline design and standards, Docker multi-stage builds, semantic versioning, Harness.io, GitHub Actions, Jenkins, OpenTofu                 |
-| **AI/LLM**         | Claude Agent SDK, Anthropic API, Claude Code, Copilot, Ollama, agent workflow design                                    |
-| **Practices**      | Platform architecture, distributed systems, developer tooling, DX, observability, technical mentorship |
-
----
+**Diagram Builder | 2026** — Open-source repository visualization platform using TypeScript, React, Three.js, and Neo4j, built with agent-assisted development workflows.
 
 ## Education
 
-**Savannah College of Art and Design** — Savannah, GA
-Bachelor of Fine Arts, Interactive Design and Game Development | 2002–2006
+**Savannah College of Art and Design** — BFA, Interactive Design and Game Development | 2002–2006
 
-**Code Academy** (now the Starter League) — Chicago, IL
-Ruby on Rails Development | 2011
+**Code Academy (now the Starter League)** — Ruby on Rails Development | 2011

@@ -10,6 +10,29 @@
   {{- $oss := where $pages ".Params.tier" "open-source" }}
   {{- $work := where $pages ".Params.tier" "work" }}
 
+  {{- if $work }}
+  <section class="portfolio-section">
+    <div class="home-section-header">
+      <span class="section-label">Work Highlights</span>
+    </div>
+    <div class="portfolio-grid">
+      {{- range $work.ByWeight }}
+      <a href="{{ .Permalink }}" class="portfolio-card">
+        <h3>{{ .Title }}</h3>
+        <p class="impact">{{ .Params.impact }}</p>
+        {{- if .Params.tech }}
+        <div class="tech-tags">
+          {{- range .Params.tech }}
+          <span class="tech-tag">{{ . }}</span>
+          {{- end }}
+        </div>
+        {{- end }}
+      </a>
+      {{- end }}
+    </div>
+  </section>
+  {{- end }}
+
   {{- if $oss }}
   <section class="portfolio-section">
     <div class="home-section-header">
@@ -28,30 +51,7 @@
         </div>
         {{- end }}
         {{- if .Params.link }}
-        <span class="card-link">View on GitHub →</span>
-        {{- end }}
-      </a>
-      {{- end }}
-    </div>
-  </section>
-  {{- end }}
-
-  {{- if $work }}
-  <section class="portfolio-section" style="margin-top:2.5rem;">
-    <div class="home-section-header">
-      <span class="section-label">Work Highlights</span>
-    </div>
-    <div class="portfolio-grid">
-      {{- range $work }}
-      <a href="{{ .Permalink }}" class="portfolio-card">
-        <h3>{{ .Title }}</h3>
-        <p class="impact">{{ .Params.impact }}</p>
-        {{- if .Params.tech }}
-        <div class="tech-tags">
-          {{- range .Params.tech }}
-          <span class="tech-tag">{{ . }}</span>
-          {{- end }}
-        </div>
+        <span class="card-link">View project →</span>
         {{- end }}
       </a>
       {{- end }}
